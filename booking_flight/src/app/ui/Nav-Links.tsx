@@ -11,7 +11,7 @@ export default function NavLinks() {
       <ul className="flex gap-6 ">
         {
             Links.map((link) =>(
-                <li className="text-2xl font-thin leading-normal hover:scale-125 transition duration-500 ease-in-out"><Link className="" href={link.href}>{link.name}</Link></li>
+                <li className="nav-style"><Link className="" href={link.href}>{link.name}</Link></li>
             ) )
         }
       </ul>

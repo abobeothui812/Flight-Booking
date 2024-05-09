@@ -15,4 +15,7 @@
     .nav-style{
       @apply text-2xl font-semibold text-slate-600 leading-normal hover:scale-125 transition duration-500 ease-in-out ;
     }
+    .flex-center{
+      @apply flex justify-center items-center
+    }
   }

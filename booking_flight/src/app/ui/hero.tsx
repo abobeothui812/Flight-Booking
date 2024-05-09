@@ -1,38 +1,18 @@
 import Image from "next/image";
+import header from "../../../public/assets/header.jpg"
 export default function Hero() {
     return (
-      <div className="flex justify-center items-center flex-col gap-14">
-        <h2 className="font-serif font-bold text-8xl mt-24">Choose Your flight</h2>
-        <div className="rounded-2xl border-4 border-black w-[1300px] h-[350px] flex-col flex gap-9  p-8">
-            
-            <div className="flex justify-start items-center gap-7">
-                <select className="select-style" name="typeofflight" id="flight">
-                    <option value="round trip">Round trip</option>
-                    <option value="one way">One way</option>
-                </select>
-                <select className="select-style"  name="numofpeople" id="people">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                </select>
-               
-                <select className="select-style" name="typeofticket" id="ticket">
-                    <option value="economy">Economy</option>
-                    <option value="premium economy">Premium economy</option>
-                    <option value="bussiness">Bussiness</option>
-                    <option value="first">First</option>
-                </select>
-            </div>
+      <div className="flex justify-center items-center flex-col gap-2">
+        <h2 className="font-serif flex-center text-center leading-tight  font-bold text-5xl mt-24 capitalize">
+            Find and book <br /> a great experience
+        </h2>
+        <Image
+        src={header}
+        alt = "picture of a flight">
 
-            <div className="flex gap-3 ">
-                <input className="selectdatestype" placeholder="Enter place..." type="text" />
-                <input className="selectdatestype" placeholder="Enter place..." type="text" />
-                <input className="selectdatestype" type="datetime-local" />
-                <input className="selectdatestype" type="datetime-local" />
-            </div>
-            <div className="flex justify-center items-center">
-            <button className="btn ">Search</button>
-            </div>
-        </div>
+        </Image>
+
+        
       </div>
     );
 }

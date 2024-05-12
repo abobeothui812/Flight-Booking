@@ -1,4 +1,4 @@
-import NavLinks from "./Nav-Links";
+import NavLinks from "./component/Nav-Links";
 export default function Navbar() {
     return (
       <nav className="flex flex-1 justify-around items-center gap-5 p-3 border-2 border-slate-300">

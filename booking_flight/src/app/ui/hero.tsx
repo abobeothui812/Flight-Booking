@@ -1,6 +1,6 @@
 import Image from "next/image";
 import header from "../../../public/assets/header.jpg"
-import { poppins } from "./font";
+import { poppins } from "./component/asset/font";
 export default function Hero() {
     return (
       <div className="flex justify-center items-center flex-col gap-2">
@@ -13,8 +13,6 @@ export default function Hero() {
         width={1200}
         height={300}>
         </Image>
-
-        
       </div>
     );
 }

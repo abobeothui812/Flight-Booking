@@ -2,10 +2,11 @@
 import clsx from "clsx";
 import { useState, useRef } from "react";
 import { useEffect } from "react";
-import { lusitana, poppins } from "./font";
-import DateInput from "./dateInput";
-import DestinationCard from "./component/DestinationCard";
+import { lusitana, poppins } from "./component/asset/font";
+import DateInput from "./component/Booking/dateInput";
+import DestinationCard from "./component/Booking/DestinationCard";
 import { buttons } from "../lib/place-holder";
+import TypeCard from "./component/Booking/TypeCard";
 export default function Booking() {
     const [bookingType,BookingType] = useState("Bussiness Class");
     useEffect(() => {
@@ -18,7 +19,7 @@ export default function Booking() {
     }
     
     return (
-      <div className="rounded-3xl mt-20  border-2 flex-center gap-8 flex-col shadow-md  w-[1300px] px-2 h-[300px] ">
+      <div className="rounded-3xl mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] ">
          <div className="flex-center"
 >            {
                 buttons.map((btn) => (
@@ -28,22 +29,22 @@ export default function Booking() {
         
          </div>
             {/* dropdown menu */}
-         <div   className="w-full rounded-2xl border-2 border-gray-200  h-1/2 flex">
+         <div   className="w-full rounded-2xl border-2 border-gray-200  h-[150px] flex mt-8 mb-6">
             
-            <DestinationCard type="Depature" city="Ha Noi" airport="Noi Bai Airport" ></DestinationCard>
+            <DestinationCard type="Departure" city="Ha Noi" airport="Noi Bai Airport" ></DestinationCard>
             <DestinationCard type="Destination" city="Ho Chi Minh City" airport="Tan Son Nhat Airport" ></DestinationCard>
             
             <div className="flex flex-row ">
-            <DateInput type="Depature"></DateInput>
+            <DateInput type="Departure"></DateInput>
             <DateInput type="Return"></DateInput>
             </div>
-            
-                        
 
-            
+            <TypeCard></TypeCard>            
         </div>
+
+
+        <button className={`bg-blue-600 text-stone-100 hover:bg-blue-700 rounded-full text-xl ${poppins.className} font-bold w-[200px] h-[50px]`}>Search</button>
         
-         
       </div>
     );
 }

@@ -13,9 +13,16 @@
       @apply border-4 rounded-full py-2 px-5 font-serif font-bold border-black text-xl hover:bg-slate-300 transition duration-500 ease-in-out ;
     }
     .nav-style{
-      @apply text-2xl font-semibold text-slate-600 leading-normal hover:scale-125 transition duration-500 ease-in-out ;
+      @apply text-2xl font-semibold text-white leading-normal hover:scale-125 transition duration-500 ease-in-out ;
     }
     .flex-center{
       @apply flex justify-center items-center;
+    }
+    .TypeofTicketBtn{
+      @apply flex-center w-full gap-2 rounded-md p-2 bg-slate-100 hover:bg-slate-200 transition duration-500 ease-in-out focus:bg-blue-500 focus:text-white ;
+    }
+
+    .BlueBtn{
+      @apply  rounded-md p-2 bg-blue-600 text-white font-semibold hover:bg-blue-800 transition duration-500 ease-in-out ;
     }
   }

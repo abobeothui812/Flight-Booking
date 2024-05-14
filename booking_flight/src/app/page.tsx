@@ -15,9 +15,7 @@ export default function Home() {
       <section id="Popular Routes" className="w-full h-full flex-center mt-24">
           <PopularRoutes></PopularRoutes>
       </section>
-      <section id="footer" className="mt-24 bg-blue-600 w-full h-[250px] flex-center">
-        <Footer></Footer>
-      </section>
+      
       
     </main>
   );

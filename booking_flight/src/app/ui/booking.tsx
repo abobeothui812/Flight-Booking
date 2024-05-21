@@ -7,6 +7,7 @@ import DateInput from "./component/Booking/dateInput";
 import DestinationCard from "./component/Booking/DestinationCard";
 import { buttons } from "../lib/place-holder";
 import TypeCard from "./component/Booking/TypeCard";
+import { useRouter } from "next/router";
 export default function Booking() {
     const [bookingType,BookingType] = useState("Bussiness Class");
     useEffect(() => {
@@ -17,6 +18,7 @@ export default function Booking() {
         BookingType(name);
         
     }
+    
     
     return (
       <div className="rounded-3xl mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] ">
@@ -43,7 +45,7 @@ export default function Booking() {
         </div>
 
 
-        <button className={`bg-blue-600 text-stone-100 hover:bg-blue-700 rounded-full text-xl ${poppins.className} font-bold w-[200px] h-[50px]`}>Search</button>
+        <button  className={`bg-blue-600 text-stone-100 hover:bg-blue-700 rounded-full text-xl ${poppins.className} font-bold w-[200px] h-[50px]`}>Search</button>
         
       </div>
     );

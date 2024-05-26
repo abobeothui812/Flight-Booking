@@ -1,11 +1,5 @@
 import Link from "next/link";
-const Links =[
-    {href:"/",name:"Home"},
-    {href:"/",name:"About Us"},
-    {href:"/",name:"Contact"},
-    {href:"/",name:"Your Flight"},
-    
-]
+import { Links } from "@/app/lib/place-holder";
 export default function NavLinks() {
     return (
       <ul className="flex gap-6 ">

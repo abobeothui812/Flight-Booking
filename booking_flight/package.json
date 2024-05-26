@@ -11,6 +11,7 @@
   "dependencies": {
     "flatpickr": "^4.6.13",
     "next": "14.2.3",
+    "pg": "^8.11.5",
     "react": "^18",
     "react-calendar": "^5.0.0",
     "react-dom": "^18",

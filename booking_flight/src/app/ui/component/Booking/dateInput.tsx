@@ -3,8 +3,9 @@ import flatpickr from "flatpickr"
 import { poppins } from "../asset/font";
 import { useRef,useState,useEffect } from "react";
 import Calendar from "react-calendar";
-export default function DateInput( {type} :{type : string }) {
+export default function DateInput( {type,inputname} :{type : string,inputname : string }) {
     const [selectedDate, setSelectDate] = useState(new Date());
+    const [formattedDate, setFormattedDate] = useState("");
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const day = dayNames[selectedDate.getDay()];
     const returnDay = dayNames[(selectedDate.getDay() + 2) % 7];
@@ -18,9 +19,16 @@ export default function DateInput( {type} :{type : string }) {
     const changeSearchMenuState = () => {
         setSearchMenuState(!searchMenuState);
     }; 
+    function formatDate(date : Date) {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // getMonth() trả về tháng từ 0 (tháng 1) đến 11 (tháng 12)
+        const day = date.getDate();
 
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    }
     const handleDateChange = (newDate: Date) => {
         setSelectDate(newDate);
+        setFormattedDate(formatDate(newDate));
       };
     useEffect(() => {
         const handleClickOutside = (e : MouseEvent) => {
@@ -40,18 +48,19 @@ export default function DateInput( {type} :{type : string }) {
     return (
         
             <div onClick={changeSearchMenuState} className="h-full w-1/2 flex p-3 justify-around items-start flex-col border-r-2 cursor-pointer hover:bg-gray-100 ">
-                <p className={`${poppins.className} text-md text-slate-400 `}>{type === "Depature" ? "Depature" : "Return"}</p>
+                <p className={`${poppins.className} text-md text-slate-400 `}>{type === "Departure" ? "Departure" : "Return"}</p>
                 <div className="flex flex-col">
                     <div className="flex justify-center overflow-hidden text-ellipsis whitespace-nowrap items-baseline gap-3">
-                        <h3  className="text-5xl font-sans font-bold">{date}</h3>
+                        <h3  className="text-5xl font-sans font-bold">{date }</h3>
                         <p className="font-sans font-medium text-2xl">{month} {year}</p>
                     </div>
-                    <p className={`${poppins.className}   text-md text-slate-400 `}>{day}</p>
+                    <p className={`${poppins.className}   text-md text-slate-400 `}>{day }</p>
                 </div>
         
                 <div onClick={(e) => e.stopPropagation()} ref={node} className={`${searchMenuState ? "block" : "hidden"} w-[350px] h-[350px] flex justify-center items-end bg-white absolute`}>
 
-                <Calendar onChange={handleDateChange} value={selectedDate}/>
+                <Calendar onChange={(value, event) => handleDateChange(value as Date)} value={selectedDate}/>
+                <input type="hidden" name={inputname} value={formattedDate} />
                 </div>
             </div>
 

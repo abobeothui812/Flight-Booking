@@ -1,6 +1,7 @@
-const buttons=[{name : 'Economy Class'},
-              {name : 'Business Class'},
-              {name : 'First Class' }
+
+const buttons=[{name : 'One Way'},
+             
+              {name : 'Rounded trip' }
 ];
 const Cities = [{name : "Ho Chi Minh City",airport : "Tan Son Nhat Airport"},
                 {name : "Hanoi",airport : "Noi Bai Airport"},
@@ -8,7 +9,11 @@ const Cities = [{name : "Ho Chi Minh City",airport : "Tan Son Nhat Airport"},
                 {name : "Hue",airport : "Phu Bai Airport"},
                 {name : "Nha Trang",airport : "Cam Ranh Airport"},];
 
+const Links =[
+    {href:"/",name:"Home"},
+    {href:"/",name:"About Us"},
+    {href:"/",name:"Contact"},
+    {href:"/",name:"Your Flight"},
+];
 
-
-
-module.exports = {buttons,Cities}
+module.exports = {buttons,Cities,Links}

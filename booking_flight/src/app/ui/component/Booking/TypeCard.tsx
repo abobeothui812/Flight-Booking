@@ -15,15 +15,6 @@ export default function TypeCard() {
     const changeSearchMenuState = () => {
         setSearchMenuState(!searchMenuState);
     };
-    const Increase = () => {
-        setNumberOfAdults(numberOfAdults + 1);
-        
-    }
-
-    const Decrease = () => {
-        setNumberOfAdults(numberOfAdults - 1);
-        
-    }
     const updateChange =() =>{
         setNumberOfTravelers(numberOfAdults + numberOfChildren + numberOfInfants);
         if(isChecked){
@@ -57,24 +48,29 @@ export default function TypeCard() {
             <p className={`${poppins.className}   text-md text-slate-400`}>{typeOfTicket}</p>
             </div>
             
-            <div ref={node} onClick={(e) => e.stopPropagation()}  className={`absolute   ${searchMenuState ? 'block' : 'hidden'} py-2 px-3 gap-4 flex justify-center   flex-col  rounded-md   bg-white w-[250px] h-[400px] border-2 border-gray-200`}>
+            <div ref={node} onClick={(e) => e.stopPropagation()}  className={`absolute   ${searchMenuState ? 'block' : 'hidden'} py-2 px-3 gap-4 flex justify-center   flex-col  rounded-md   bg-white w-[250px] h-[450px] border-2 border-gray-200`}>
                 <div  className="flex flex-col gap-1 ">
                     <IncreaseNum type="Adult" numberOfpeople={numberOfAdults} subscript="(12+ Years)" setNumberOfpeople={setNumberOfAdults}></IncreaseNum>
                     <IncreaseNum type="Children" numberOfpeople={numberOfChildren} subscript="(2-12 Years)" setNumberOfpeople={setNumberOfChildren}></IncreaseNum>
                     <IncreaseNum type="Infant" numberOfpeople={numberOfInfants} subscript="(0-2 Years)" setNumberOfpeople={setNumberOfInfants}></IncreaseNum> 
                 </div>
-                
+                <input type="hidden" name="Adults" value={numberOfAdults} />
+                <input type="hidden" name="Children" value={numberOfChildren} />
+                <input type="hidden" name="Infants" value={numberOfInfants}/>
+                <input type="hidden" name="TotalPassengers" value={numberOfTravelers} />
                 <div className="flex-center gap-2 rounded-md p-2 bg-slate-100 ">
                     <input checked={isChecked} onChange={() => setIsChecked(!isChecked)}  type="checkbox" />
                     <p > 9 travelers</p>
                 </div>
                 <hr />
                 <div className="flex-center flex-col gap-2">
-                    <button onClick={() =>setTypeOfTicket("One Way")} className="TypeofTicketBtn ">One Way</button>
-                    <button onClick={() =>setTypeOfTicket("Round Trip")} className="TypeofTicketBtn">Round Trip</button>
+                    <input type="button"  value="Business class" onClick={() =>setTypeOfTicket("Business class")} className="TypeofTicketBtn "/>
+                    <input type="button"  value="First Class" onClick={() =>setTypeOfTicket("First Class")} className="TypeofTicketBtn"/>
+                    <input type="button"  value="Economy class" onClick={() =>setTypeOfTicket("Economy class")} className="TypeofTicketBtn"/>
                 </div>
+                <input type="hidden" value={typeOfTicket} name="seatClass" />
                 <div className="flex-center">
-                <button onClick={updateChange} className="BlueBtn w-[100px] h-[50px]">Done</button>
+                <button type="button" onClick={updateChange} className="BlueBtn w-[100px] h-[50px]">Done</button>
                 </div>
             </div>
 

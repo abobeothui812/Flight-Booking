@@ -1,16 +1,4 @@
 import pool from "../ultis/pgDB";
-export async function fetchDatafromDB(){
-    try {
-        const client = await pool.connect();
-        console.log('Connected to database');
-        const res = await client.query('SELECT * FROM flight');
-        client.release()
-        return res.rows
-    } catch(error){
-        console.log("error fetching data from DB:", error);
-        throw error
-    }
-}
 
 export async function fetchLocation(){
     try{

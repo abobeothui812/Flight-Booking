@@ -10,7 +10,7 @@ export default function TypeCard() {
     const  [numberOfAdults, setNumberOfAdults] = useState(0);
     const  [numberOfChildren, setNumberOfChildren] = useState(0);
     const  [numberOfInfants, setNumberOfInfants] = useState(0);
-    const  [typeOfTicket, setTypeOfTicket] = useState("One Way");
+    const  [seatClass, setSeatClass] = useState("First Class");
     const  [isChecked, setIsChecked] = useState(false);
     const changeSearchMenuState = () => {
         setSearchMenuState(!searchMenuState);
@@ -41,11 +41,11 @@ export default function TypeCard() {
         <div onClick={changeSearchMenuState} className="flex flex-col justify-around cursor-pointer border-r-2 hover:bg-gray-100 p-4 items-start rounded-l-2xl w-[320px] h-full">
             <span className="text-slate-400 text-md">Travelers & Ticket</span>
             <div className="flex flex-col">
-            <div className="flex justify-center overflow-hidden text-ellipsis whitespace-nowrap items-baseline gap-3">
-                <h3  className="text-5xl font-sans font-bold">{numberOfTravelers}
-                </h3><p className="font-sans font-medium text-2xl">Travelers</p>
-            </div>
-            <p className={`${poppins.className}   text-md text-slate-400`}>{typeOfTicket}</p>
+                <div className="flex justify-center overflow-hidden text-ellipsis whitespace-nowrap items-baseline gap-3">
+                    <h3  className="text-5xl font-sans font-bold">{numberOfTravelers}
+                    </h3><p className="font-sans font-medium text-2xl">Travelers</p>
+                </div>
+                <p className={`${poppins.className}   text-md text-slate-400`}>{seatClass}</p>
             </div>
             
             <div ref={node} onClick={(e) => e.stopPropagation()}  className={`absolute   ${searchMenuState ? 'block' : 'hidden'} py-2 px-3 gap-4 flex justify-center   flex-col  rounded-md   bg-white w-[250px] h-[450px] border-2 border-gray-200`}>
@@ -63,12 +63,12 @@ export default function TypeCard() {
                     <p > 9 travelers</p>
                 </div>
                 <hr />
-                <div className="flex-center flex-col gap-2">
-                    <input type="button"  value="Business class" onClick={() =>setTypeOfTicket("Business class")} className="TypeofTicketBtn "/>
-                    <input type="button"  value="First Class" onClick={() =>setTypeOfTicket("First Class")} className="TypeofTicketBtn"/>
-                    <input type="button"  value="Economy class" onClick={() =>setTypeOfTicket("Economy class")} className="TypeofTicketBtn"/>
+                <div className="flex-center flex-col gap-2 ">
+                    <input type="button"  value="Business class" onClick={() =>setSeatClass("Business class")} className="TypeofTicketBtn cursor-pointer "/>
+                    <input type="button"  value="First Class" onClick={() =>setSeatClass("First Class")} className="TypeofTicketBtn cursor-pointer"/>
+                    <input type="button"  value="Economy class" onClick={() =>setSeatClass("Economy class")} className="TypeofTicketBtn cursor-pointer"/>
                 </div>
-                <input type="hidden" value={typeOfTicket} name="seatClass" />
+                <input type="hidden" value={seatClass} name="seatClass" />
                 <div className="flex-center">
                 <button type="button" onClick={updateChange} className="BlueBtn w-[100px] h-[50px]">Done</button>
                 </div>

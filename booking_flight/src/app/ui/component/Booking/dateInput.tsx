@@ -5,7 +5,7 @@ import { useRef,useState,useEffect } from "react";
 import Calendar from "react-calendar";
 export default function DateInput( {type,inputname} :{type : string,inputname : string }) {
     const [selectedDate, setSelectDate] = useState(new Date());
-    const [formattedDate, setFormattedDate] = useState("");
+    const [formattedDate, setFormattedDate] = useState(formatDate(selectedDate));
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const day = dayNames[selectedDate.getDay()];
     const returnDay = dayNames[(selectedDate.getDay() + 2) % 7];
@@ -59,8 +59,8 @@ export default function DateInput( {type,inputname} :{type : string,inputname : 
         
                 <div onClick={(e) => e.stopPropagation()} ref={node} className={`${searchMenuState ? "block" : "hidden"} w-[350px] h-[350px] flex justify-center items-end bg-white absolute`}>
 
-                <Calendar onChange={(value, event) => handleDateChange(value as Date)} value={selectedDate}/>
-                <input type="hidden" name={inputname} value={formattedDate} />
+                <Calendar locale="en"   onChange={(value, event) => handleDateChange(value as Date)} value={selectedDate}/>
+                <input suppressHydrationWarning type="hidden" name={inputname} value={formattedDate} />
                 </div>
             </div>
 

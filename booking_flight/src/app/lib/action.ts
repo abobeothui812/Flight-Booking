@@ -29,7 +29,7 @@ const FlightSearchFormSchema = z.object({
     }),
     departureDate: z.string(),
     returnDate: z.string(),
-    seatClass: z.enum(['Economy', 'Business', 'FirstClass' ],{
+    seatClass: z.enum(['Economy', 'Business', 'First Class' ],{
       invalid_type_error: "Please select a valid seat class",
     }),
     ticketType: z.enum(['One Way','Rounded Trip'],{
@@ -46,12 +46,12 @@ export async function SearchFlight(prevState: State, formData : FormData) {
     const validatedFields = FlightSearchFormSchema.safeParse({
       from : formData.get('from'),
       to : formData.get('to'),
-      departureDate : formData.get('DepartureDate'),
-      returnDate : formData.get('ReturnDate'),
-      seatClass : formData.get('seatClass'),
+      departureDate : formData.get('DepartureDate') as string,
+      returnDate : formData.get('ReturnDate') as string,
+      seatClass : formData.get('seatClass') ,
       ticketType : formData.get('ticketType'),
       TotalPassengers : formData.get('TotalPassengers'),
-      numberOfAdults : formData.get('Adults'),
+      numberOfAdults : formData.get('Number'),
       numberOfChildren : formData.get('Children'),
       numberOfInfants : formData.get('Infants'),
     });
@@ -62,17 +62,22 @@ export async function SearchFlight(prevState: State, formData : FormData) {
     }
 
     const { from , to , departureDate , returnDate , seatClass , ticketType , TotalPassengers , numberOfAdults , numberOfChildren , numberOfInfants } = validatedFields.data;
-    console.log(validatedFields);
-
+    console.log("This one run");
     try {
-      alert("Searching for Flights from " + from + " to " + to + " on " + departureDate + " and returning on " + returnDate + " with " + TotalPassengers + " passengers." + " Seat Class: " + seatClass + " Ticket Type: " + ticketType);
+      const client = await pool.connect();
+      console.log('Connected to database 22');
+      const res = await client.query(
+        `INSERT INTO test(from1, to1, returnDate, departDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [from, to, returnDate, departureDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants]
+      );
+      client.release();
+      return res.rows
     } catch (error) {
       return {
         message: 'Database Error: Failed to Saeach Flights.',
       };
     }
-        
-
+  
     revalidatePath('/booking/flight');
     redirect('/booking/flight');
 }

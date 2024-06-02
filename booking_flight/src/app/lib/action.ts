@@ -21,12 +21,14 @@ export type State = {
   };
 const FlightSearchFormSchema = z.object({
     
-    from: z.string({
+    fromCity: z.string({
       invalid_type_error: "Please select  which city you are flying from",
     }),
-    to: z.string({
+    toCity: z.string({
       invalid_type_error: "Please select  which city you are flying to",
     }),
+    fromCountry: z.string(),
+    toCountry: z.string(),
     departureDate: z.string(),
     returnDate: z.string(),
     seatClass: z.enum(['Economy', 'Business', 'First Class' ],{
@@ -44,8 +46,10 @@ const FlightSearchFormSchema = z.object({
 });
 export async function SearchFlight(prevState: State, formData : FormData) {
     const validatedFields = FlightSearchFormSchema.safeParse({
-      from : formData.get('from'),
-      to : formData.get('to'),
+      fromCity : formData.get('fromCity'),
+      toCity : formData.get('toCity'),
+      fromCountry : formData.get('fromCountry'),
+      toCountry : formData.get('toCountry'),
       departureDate : formData.get('DepartureDate') as string,
       returnDate : formData.get('ReturnDate') as string,
       seatClass : formData.get('seatClass') ,
@@ -61,23 +65,24 @@ export async function SearchFlight(prevState: State, formData : FormData) {
           message: 'Missing Fields. Failed to Search Flights.' };
     }
 
-    const { from , to , departureDate , returnDate , seatClass , ticketType , TotalPassengers , numberOfAdults , numberOfChildren , numberOfInfants } = validatedFields.data;
+    const { fromCity , toCity, fromCountry, toCountry , departureDate , returnDate , seatClass , ticketType , TotalPassengers , numberOfAdults , numberOfChildren , numberOfInfants } = validatedFields.data;
     console.log("This one run");
     try {
       const client = await pool.connect();
       console.log('Connected to database 22');
       const res = await client.query(
-        `INSERT INTO test(from1, to1, returnDate, departDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [from, to, returnDate, departureDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants]
+        `CALL InsertAndReplaceTest($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [fromCity, toCity, returnDate, departureDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants]
       );
       client.release();
-      return res.rows
+      return res.rows;
     } catch (error) {
       return {
         message: 'Database Error: Failed to Saeach Flights.',
       };
+    } finally {
+      revalidatePath('/flight');
+       redirect('/flight');
     }
-  
-    revalidatePath('/booking/flight');
-    redirect('/booking/flight');
+    
 }

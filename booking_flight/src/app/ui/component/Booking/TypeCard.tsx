@@ -38,7 +38,7 @@ export default function TypeCard() {
     }, []);
     return (
         
-        <div onClick={changeSearchMenuState} className="flex flex-col justify-around cursor-pointer border-r-2 hover:bg-gray-100 p-4 items-start rounded-l-2xl w-[320px] h-full">
+        <div onClick={changeSearchMenuState} className="flex effect flex-col justify-around cursor-pointer rounded-r-xl hover:bg-gray-100 p-4 items-start  w-[320px]  h-full">
             <span className="text-slate-400 text-md">Travelers & Ticket</span>
             <div className="flex flex-col">
                 <div className="flex justify-center overflow-hidden text-ellipsis whitespace-nowrap items-baseline gap-3">

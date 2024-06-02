@@ -47,7 +47,7 @@ export default function DateInput( {type,inputname} :{type : string,inputname : 
 
     return (
         
-            <div onClick={changeSearchMenuState} className="h-full w-1/2 flex p-3 justify-around items-start flex-col border-r-2 cursor-pointer hover:bg-gray-100 ">
+            <div onClick={changeSearchMenuState} className="h-full w-1/2 effect flex-shrink-0 flex p-3 justify-around items-start flex-col border-r-2 cursor-pointer hover:bg-gray-100 ">
                 <p className={`${poppins.className} text-md text-slate-400 `}>{type === "Departure" ? "Departure" : "Return"}</p>
                 <div className="flex flex-col">
                     <div className="flex justify-center overflow-hidden text-ellipsis whitespace-nowrap items-baseline gap-3">

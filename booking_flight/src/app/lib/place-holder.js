@@ -1,7 +1,6 @@
 
 const buttons=[{name : 'One Way'},
-             
-              {name : 'Rounded trip' }
+              {name : 'Rounded Trip' }
 ];
 const Cities = [{name : "Ho Chi Minh City",airport : "Tan Son Nhat Airport"},
                 {name : "Hanoi",airport : "Noi Bai Airport"},

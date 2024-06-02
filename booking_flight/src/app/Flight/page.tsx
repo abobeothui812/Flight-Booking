@@ -1,13 +1,15 @@
 import { inter, lusitana, poppins } from "../ui/component/asset/font";
 import SideSearchBar from "../ui/component/flight/sideSearchBar";
 import FlightsCard from "../ui/component/flight/flightsCard";
-import { fetchSearchFlight } from "../lib/data";
+import { fetchDepartFlight } from "../lib/data";
 import { FlightSearchInformation } from "../lib/definition";
+import FlightConfirmModal from "../ui/component/bookingFlight/FlightConfirmModal";
 export default async function Page() {
-    const SearchedFlights = await fetchSearchFlight();
+    const SearchedFlights = await fetchDepartFlight();
+    
     
     return (
-        <main className="flex-center">
+        <main className="flex-center flex-col">
             <div className="w-[1300px]  flex flex-col">
                 <div className="flex justify-end items-baseline w-full px-2 py-7">
                     <p className={`${lusitana} text-lg  text-gray-600`}>Sort By:</p>
@@ -24,15 +26,17 @@ export default async function Page() {
                         {
                             SearchedFlights.map((flight : FlightSearchInformation) => (
                                 <FlightsCard key={flight.flightid} flight={flight}></FlightsCard>
-                                
                             ))
                         }
                     </div>
+
+                    
+                    
                 </div>
             </div>
 
 
-            
+        <FlightConfirmModal/>   
         </main>
     );
 }

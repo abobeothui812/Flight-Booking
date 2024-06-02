@@ -64,9 +64,9 @@ export default function TypeCard() {
                 </div>
                 <hr />
                 <div className="flex-center flex-col gap-2 ">
-                    <input type="button"  value="Business class" onClick={() =>setSeatClass("Business class")} className="TypeofTicketBtn cursor-pointer "/>
+                    <input type="button"  value="Business" onClick={() =>setSeatClass("Business")} className="TypeofTicketBtn cursor-pointer "/>
                     <input type="button"  value="First Class" onClick={() =>setSeatClass("First Class")} className="TypeofTicketBtn cursor-pointer"/>
-                    <input type="button"  value="Economy class" onClick={() =>setSeatClass("Economy class")} className="TypeofTicketBtn cursor-pointer"/>
+                    <input type="button"  value="Economy" onClick={() =>setSeatClass("Economy")} className="TypeofTicketBtn cursor-pointer"/>
                 </div>
                 <input type="hidden" value={seatClass} name="seatClass" />
                 <div className="flex-center">

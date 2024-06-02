@@ -24,12 +24,15 @@ export type FlightSearchInformation ={
     arrivalcity: string,
     arrivalcountry: string,
     arrivalairportid: string,
-    departime: Date,
-    arrivaltime: Date,
+    departdate: string,
+    arrivaldate: string,
+    departtime1: string,
+    arrivaltime1: string,
+    timeofflight: string,
     price: number ,
     seatClass: string,
     totalofseat: number,
-    
+    tickettype: string,
 }
 
 export type Location ={

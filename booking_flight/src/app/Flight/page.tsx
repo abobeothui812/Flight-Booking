@@ -1,7 +1,11 @@
 import { inter, lusitana, poppins } from "../ui/component/asset/font";
 import SideSearchBar from "../ui/component/flight/sideSearchBar";
 import FlightsCard from "../ui/component/flight/flightsCard";
-export default function Page() {
+import { fetchSearchFlight } from "../lib/data";
+import { FlightSearchInformation } from "../lib/definition";
+export default async function Page() {
+    const SearchedFlights = await fetchSearchFlight();
+    
     return (
         <main className="flex-center">
             <div className="w-[1300px]  flex flex-col">
@@ -17,11 +21,12 @@ export default function Page() {
                     <SideSearchBar></SideSearchBar>
                 
                     <div className="flex flex-col justify-center items-end py-2 px-3 gap-8   w-full">
-                        <FlightsCard/>
-
-                        <FlightsCard/>
-
-                        <FlightsCard/>
+                        {
+                            SearchedFlights.map((flight : FlightSearchInformation) => (
+                                <FlightsCard key={flight.flightid} flight={flight}></FlightsCard>
+                                
+                            ))
+                        }
                     </div>
                 </div>
             </div>

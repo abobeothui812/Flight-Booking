@@ -20,8 +20,10 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
     }
     const cilentAction = async (formData : FormData) => {
         const newFlight ={
-            from : formData.get('from'),
-            to : formData.get('to'),
+            fromCity : formData.get('fromCity'),
+            toCity : formData.get('toCity'),
+            fromCountry : formData.get('fromCountry'),
+            toCountry : formData.get('toCountry'),
             departureDate : formData.get('DepartureDate') as string,
             returnDate : formData.get('ReturnDate') as string,
             seatClass : formData.get('seatClass'),
@@ -33,7 +35,7 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
 
         }
 
-        alert(`flight from ${newFlight.from} to ${newFlight.to} on ${newFlight.departureDate} and return on ${newFlight.returnDate} with ${newFlight.TotalPassengers}(${newFlight.numberOfChildren} children,${newFlight.numberOfAdults} adults, ${newFlight.numberOfInfants} infants) passengers with ${newFlight.ticketType} and ${newFlight.seatClass}`)
+        alert(`flight from ${newFlight.fromCity} in ${newFlight.fromCountry} to ${newFlight.toCity} in ${newFlight.toCountry} on ${newFlight.departureDate} and return on ${newFlight.returnDate} with ${newFlight.TotalPassengers}(${newFlight.numberOfChildren} children,${newFlight.numberOfAdults} adults, ${newFlight.numberOfInfants} infants) passengers with ${newFlight.ticketType} and ${newFlight.seatClass}`)
     }
     return(
         <form action={dispatch} className="rounded-3xl  mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] " >
@@ -55,8 +57,8 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
             
             <div   className="w-full rounded-2xl border-2 border-gray-200  h-[150px] flex mt-8 mb-6">
                 
-                <DestinationCard LocationData2={LocationData} type="Departure" city="Ha Noi" airport="Noi Bai Airport" inputname="from" ></DestinationCard>
-                <DestinationCard LocationData2={LocationData} type="Destination" city="Ho Chi Minh City" airport="Tan Son Nhat Airport" inputname="to"></DestinationCard>
+                <DestinationCard LocationData2={LocationData} type="Departure" city="Ha Noi" airport="Noi Bai Airport" inputCity="fromCity" inputCountry='fromCountry' ></DestinationCard>
+                <DestinationCard LocationData2={LocationData} type="Destination" city="Ho Chi Minh City" airport="Tan Son Nhat Airport" inputCity="toCity" inputCountry='toCountry'></DestinationCard>
                 
                 <div className="flex flex-row ">
                 <DateInput inputname="DepartureDate" type="DepartureDate"></DateInput>
@@ -66,10 +68,11 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
                 <TypeCard></TypeCard>            
             </div>
 
-
-                <button type="submit"  className={`bg-blue-600 text-stone-100 hover:bg-blue-700 rounded-full text-xl ${poppins.className} font-bold w-[200px] h-[50px]`}>
-                    <Link href='/flight'>Search</Link>
+            
+                <button type="submit" onClick={e => console.log('thisonerun')}  className={`bg-blue-600 text-stone-100 hover:bg-blue-900 effect rounded-full text-xl ${poppins.className} font-bold w-[200px] h-[50px]`}>
+                    Search
                 </button>
+            
         </form>
     )
 

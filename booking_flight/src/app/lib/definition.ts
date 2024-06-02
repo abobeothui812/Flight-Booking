@@ -15,17 +15,21 @@ export type Flight ={
 
 export type FlightSearchInformation ={
     flightid: string,
-    from: string,
-    to: string,
-    departureDate: string,
-    returnDate: string,
+    flightnumber : string, 
+    departairport : string,
+    arrivalairport : string,
+    departairportid: string,
+    departcity: string,
+    departcountry: string,
+    arrivalcity: string,
+    arrivalcountry: string,
+    arrivalairportid: string,
+    departime: Date,
+    arrivaltime: Date,
+    price: number ,
     seatClass: string,
-    ticketType: string,
-    TotalPassengers: number,
-    numberOfAdults: number,
-    numberOfChildren: number,
-    numberOfInfants: number,
-
+    totalofseat: number,
+    
 }
 
 export type Location ={

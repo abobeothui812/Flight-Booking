@@ -31,7 +31,7 @@ const FlightSearchFormSchema = z.object({
     toCountry: z.string(),
     departureDate: z.string(),
     returnDate: z.string(),
-    seatClass: z.enum(['Economy', 'Business', 'First Class' ],{
+    seatClass: z.enum(['Economy','Business','First Class'],{
       invalid_type_error: "Please select a valid seat class",
     }),
     ticketType: z.enum(['One Way','Rounded Trip'],{
@@ -66,16 +66,17 @@ export async function SearchFlight(prevState: State, formData : FormData) {
     }
 
     const { fromCity , toCity, fromCountry, toCountry , departureDate , returnDate , seatClass , ticketType , TotalPassengers , numberOfAdults , numberOfChildren , numberOfInfants } = validatedFields.data;
-    console.log("This one run");
+    
     try {
       const client = await pool.connect();
-      console.log('Connected to database 22');
       const res = await client.query(
         `CALL InsertAndReplaceTest($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
         [fromCity, toCity, returnDate, departureDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants]
       );
       client.release();
-      return res.rows;
+      return {
+        message: 'Flight Search Successful.',
+      };
     } catch (error) {
       return {
         message: 'Database Error: Failed to Saeach Flights.',

@@ -79,6 +79,6 @@ BEGIN
                 WHEN type_of_seat = 'Economy' THEN f.AvailableSeat_Economy 
                 WHEN type_of_seat = 'Business' THEN f.AvailableSeat_Business
                 WHEN type_of_seat = 'FirstClass' THEN f.AvailableSeat_FirstClass
-            END >= (num_of_adult + num_of_child + num_of_infant_is + num_of_infant_ol);
+            END >= (num_of_adult + num_of_child + num_of_infant_is);
 END;
 $$ LANGUAGE plpgsql;

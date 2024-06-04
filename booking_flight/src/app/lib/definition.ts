@@ -30,9 +30,10 @@ export type FlightSearchInformation ={
     arrivaltime1: string,
     timeofflight: string,
     price: number ,
-    seatClass: string,
+    seatclass: string,
     totalofseat: number,
     tickettype: string,
+    airlinename: string,
 }
 
 export type Location ={

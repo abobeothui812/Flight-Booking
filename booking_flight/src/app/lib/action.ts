@@ -3,6 +3,7 @@ import { z } from "zod";
 import pool from "../ultis/pgDB";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { FlightSearchInformation } from "./definition";
 export type State = {
     errors?: {
         from?: string[];
@@ -86,4 +87,21 @@ export async function SearchFlight(prevState: State, formData : FormData) {
        redirect('/flight');
     }
     
+}
+
+export async function InsertBookingInformation( flight : FlightSearchInformation){
+  try{
+    const client = await pool.connect();
+    const res = await client.query(
+      `Insert into booking(flightid,seattype,paymentstatus) values ($1,$2,$3)`,[flight.flightid,flight.seatclass,'Pending']
+    );
+    } catch(error){
+    return {
+      message: 'Database Error: Failed to Insert Booking Information.',
+    };
+    } finally{
+      revalidatePath('/flight/booking/passengerDetails');
+      redirect('/flight/booking/passengerDetails');
+    }
+  
 }

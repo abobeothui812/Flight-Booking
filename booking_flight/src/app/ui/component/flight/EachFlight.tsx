@@ -10,7 +10,10 @@ export default function EachFlight({fl} : {fl : FlightSearchInformation}) {
       });
     return(
         <div className="">
+            <div className="flex justify-between">
             <p className={`font-semibold ${poppins.className} text-lg `}>{fl.departdate} - Departure</p>
+            <p className={`text-gray ${poppins.className} text-lg text-gray-500 `}>{fl.seatclass}</p>
+            </div>
             <div className=" flex-row flex  justify-between items-start px-1">
                         <div className="flex text-slate-700 gap-2 overflow  min-w-[250px] flex-shrink-0  text-xl  flex-col justify-between items-center p-4">
                             <p className="text-5xl font-semibold">{fl.departtime1}</p>

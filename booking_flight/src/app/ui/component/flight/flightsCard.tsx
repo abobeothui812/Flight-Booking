@@ -3,6 +3,7 @@ import { HiOutlineMinus } from "react-icons/hi"
 import Link from "next/link"
 import EachFlight from "./EachFlight"
 import { FlightSearchInformation } from "@/app/lib/definition"
+import FlightConfirmModal from "../bookingFlight/FlightConfirmModal"
 export default function FlightsCard( {flight} : {flight : FlightSearchInformation} ) {
     return(
         <div className="w-[900px]  flex flex-row shadow-sm rounded-lg border-2">
@@ -11,11 +12,9 @@ export default function FlightsCard( {flight} : {flight : FlightSearchInformatio
                 
             </div>
             
-            <div className="flex flex-grow flex-col justify-center items-center">
-                <p>${flight.price}</p>
-                <button className="BlueBtn">
-                    <Link href='/flight/booking'>Select this flight</Link>
-                </button>
+            <div className="flex flex-grow flex-col gap-2 justify-center items-center">
+                <p className="text-lg font-semibold">${flight.price}</p>
+                <FlightConfirmModal flight={flight}></FlightConfirmModal>
             </div>
         </div>
     )

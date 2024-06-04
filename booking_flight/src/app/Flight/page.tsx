@@ -36,7 +36,7 @@ export default async function Page() {
             </div>
 
 
-        <FlightConfirmModal/>   
+           
         </main>
     );
 }

@@ -37,7 +37,7 @@ export type FlightSearchInformation ={
 }
 
 export type Location ={
-    locationid : string;
+    airportid : string;
     city : string;
     country : string;
     name : string;

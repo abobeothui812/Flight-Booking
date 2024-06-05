@@ -28,23 +28,22 @@ CREATE TABLE Flight (
 );
 
 CREATE TABLE Passenger (
-    PassengerID VARCHAR(10) PRIMARY KEY, --PID XXX XXXX 
+    PassengerID  serial PRIMARY KEY, --PID XXX XXXX 
     FirstName VARCHAR(100),
     LastName VARCHAR(100),
     Mail VARCHAR(100),
-    PassportNum VARCHAR(50) --PPN XXX XXXX
+    Phone VARCHAR(20)
 );
 
 CREATE TABLE Booking (
-    BookingID UUID PRIMARY DEFAULT uuid_generate_v4(),
+    BookingID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     FlightID VARCHAR(10),
     Passenger_Book VARCHAR(10),
     PaymentStatus VARCHAR(20) DEFAULT 'Pending',
     TotalPrice MONEY,
     num_of_adult INT,
 	num_of_child INT,
-	num_of_infant_is INT,
-	num_of_infant_ol INT,
+	num_of_infant INT,
     SeatType VARCHAR(20), --Eco/Busi/First
     FOREIGN KEY (FlightID) REFERENCES Flight(FlightID),
     FOREIGN KEY (Passenger_Book) REFERENCES Passenger(PassengerID)
@@ -52,10 +51,14 @@ CREATE TABLE Booking (
 CREATE TABLE BookingPassenger(
     BookingID UUID,
     PassportNum VARCHAR(50),
+    FirstName VARCHAR(100),
+    LastName VARCHAR(100),
     SeatFor VARCHAR(20), --Adult/Child/Baby
-    PRIMARY KEY(BookingID, PassengerID),
-    FOREIGN KEY(BookingID) REFERENCES Booking(BookingID),
-    FOREIGN KEY(PassportNum) REFERENCES Passenger(PassportNum)
+    Nationality VARCHAR(100),
+    BirthDate date,
+    Gender VARCHAR(10),
+    PRIMARY KEY(BookingID,PassportNum),
+    FOREIGN KEY(BookingID) REFERENCES Booking(BookingID)
 )
 --Mỗi khi tạo insert booking thì sẽ có tương ứng số bảng bookingpassenger được tạo bằng với số lượng từng loại ghế
 CREATE OR REPLACE FUNCTION create_booking_passenger_entries()
@@ -98,8 +101,8 @@ EXECUTE FUNCTION create_booking_passenger_entries();
 
 
 CREATE TABLE Payment (
-    PaymentID VARCHAR(10) PRIMARY KEY, --PmID XXX XXXX
-    BookingID VARCHAR(10),
+    PaymentID VARCHAR(11) PRIMARY KEY, --PmID XXX XXXX
+    BookingID UUID,
     Method VARCHAR(50),
     Amount MONEY,
     TransactionDate TIMESTAMP DEFAULT NULL,

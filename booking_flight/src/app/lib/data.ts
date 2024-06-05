@@ -4,7 +4,6 @@ import { searchParamInformation } from './definition';
 export async function fetchLocation(){
     try{
         const client = await pool.connect();
-        console.log('Connected to database');
         const res = await client.query('select airport.airportid,airport.city,airport.country,airport.airportname from  airport ');
         client.release();
         return res.rows
@@ -21,9 +20,7 @@ export async function fetchDepartFlight( {
 }
 ){
     try{
-        
         const client = await pool.connect();
-        console.log('Connected to database in here');
         const res = await client.query(`
         SELECT
             f.FlightID, 
@@ -68,7 +65,6 @@ export async function fetchDepartFlight( {
 export async function fetchReturnFlight(){
     try{
         const client = await pool.connect();
-        console.log('Connected to database in here');
         const res = await client.query(`
         SELECT
             f.FlightID, 

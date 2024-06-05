@@ -15,7 +15,7 @@ export default function FlightsCard( {flight,searchParams} : {flight : FlightSea
             
             <div className="flex flex-grow flex-col gap-2 justify-center items-center">
                 <p className="text-lg font-semibold">${flight.price}</p>
-                <FlightConfirmModal flight={flight}></FlightConfirmModal>
+                <FlightConfirmModal flight={flight} searchParams={searchParams}></FlightConfirmModal>
             </div>
         </div>
     )

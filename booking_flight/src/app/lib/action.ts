@@ -3,7 +3,8 @@ import { z } from "zod";
 import pool from "../ultis/pgDB";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { FlightSearchInformation } from "./definition";
+import { searchParamInformation,FlightSearchInformation } from "./definition";
+
 export type State = {
     errors?: {
         from?: string[];
@@ -89,11 +90,14 @@ export async function SearchFlight(prevState: State, formData : FormData) {
     
 }
 
-export async function InsertBookingInformation( flight : FlightSearchInformation){
+export async function InsertBookingInformation(flight: FlightSearchInformation, searchParmas: searchParamInformation ){
   try{
     const client = await pool.connect();
+    console.log("Inserting Booking Information...")
+    console.table(flight);
+    console.table(searchParmas)
     const res = await client.query(
-      `Insert into booking(flightid,seattype,paymentstatus) values ($1,$2,$3)`,[flight.flightid,flight.seatclass,'Pending']
+      `Insert into booking(flightid,num_of_adult,num_of_child,num_of_infant,seattype) values ($1,CAST($2 AS DECIMAL),CAST($3 AS DECIMAL),CAST($4 AS DECIMAL),$5)`,[flight.flightid,searchParmas.numberOfAdults,searchParmas.numberOfChildren,searchParmas.numberOfInfants,searchParmas.seatClass]
     );
     } catch(error){
     return {

@@ -75,7 +75,7 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
         
         console.log(newParam.toString());
 
-        router.push(`flight?${newParam.toString()}`);
+        router.push(`dashboard/flight?${newParam.toString()}`);
     }
     return(
         <form onSubmit={insertIntoUrl} className="rounded-3xl  mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] " >

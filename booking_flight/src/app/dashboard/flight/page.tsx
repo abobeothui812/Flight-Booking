@@ -1,10 +1,10 @@
-import { inter, lusitana, poppins } from "../ui/component/asset/font";
-import SideSearchBar from "../ui/component/flight/sideSearchBar";
-import FlightsCard from "../ui/component/flight/flightsCard";
-import { fetchDepartFlight } from "../lib/data";
-import { FlightSearchInformation } from "../lib/definition";
-import { searchParamInformation } from "../lib/definition";
-import FlightConfirmModal from "../ui/component/bookingFlight/FlightConfirmModal";
+import { lusitana } from "@/app/ui/component/asset/font";
+import SideSearchBar from "@/app/ui/component/flight/sideSearchBar";
+import FlightsCard from "@/app/ui/component/flight/flightsCard";
+import { fetchDepartFlight } from "@/app/lib/data";
+import { FlightSearchInformation } from "@/app/lib/definition";
+import { searchParamInformation } from "@/app/lib/definition";
+import FlightConfirmModal from "@/app/ui/component/bookingFlight/FlightConfirmModal";
 export default async function Page(
     { searchParams } :
     { searchParams : searchParamInformation }
@@ -33,14 +33,8 @@ export default async function Page(
                             ))
                         }
                     </div>
-
-                    
-                    
                 </div>
             </div>
-
-
-           
         </main>
     );
 }

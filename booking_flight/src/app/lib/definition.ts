@@ -23,7 +23,6 @@ export type searchParamInformation ={
     numberOfAdults : string,
     numberOfChildren : string,
     numberOfInfants : string,
-
 }
 export type FlightSearchInformation ={
     flightid: string,
@@ -42,9 +41,7 @@ export type FlightSearchInformation ={
     arrivaltime1: string,
     timeofflight: string,
     price: number ,
-    seatclass: string,
     totalofseat: number,
-    tickettype: string,
     airlinename: string,
 }
 

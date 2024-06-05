@@ -4,20 +4,21 @@ import { FaRegCalendarCheck } from "react-icons/fa"
 import { FaLocationDot } from "react-icons/fa6"
 import { RiFlightTakeoffFill } from "react-icons/ri"
 import { RiCloseLargeFill } from "react-icons/ri"
-import { FaWindowClose } from "react-icons/fa"
-import { FlightSearchInformation } from "@/app/lib/definition"
-import { poppins } from "../asset/font"
-import { InsertBookingInformation } from "@/app/lib/action"
-export default function FlightConfirmModal( {flight }:{flight : FlightSearchInformation}){
+import { FlightSearchInformation,searchParamInformation } from "@/app/lib/definition"
+import { usePathname,useRouter,useSearchParams } from "next/navigation"
+export default function FlightConfirmModal( {flight,searchParams }:{flight : FlightSearchInformation, searchParams : searchParamInformation}){
     const dialogRef = useRef<HTMLDialogElement>(null)
-    const [dialogState,setDialogState] = useState(false)
+    const [dialogState,setDialogState] = useState(false);
+    const pathName = usePathname();
+    const router = useRouter();
+    const [passengerDetails,setPassengerDetails] = useState(false);
     flight.departdate = new Date(flight.departdate).toLocaleDateString('en-US', {
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
-  const openDialog = () => {
+      const openDialog = () => {
         dialogRef.current?.showModal();
         setDialogState(true);
        
@@ -29,6 +30,18 @@ export default function FlightConfirmModal( {flight }:{flight : FlightSearchInfo
         setDialogState(false);
         
       };
+      const insertIntoUrl = ( ) => {
+
+        
+
+        const newParam = new URLSearchParams(searchParams.toString());
+        console.log(searchParams.toString());
+  
+        console.log(newParam.toString());
+
+        router.push(`dashboard/flight?`);
+    }
+      
     return(
         <>
             <dialog ref={dialogRef} className={`w-[700px]  ${ dialogState ? "flex" : "hidden"} px-4 justify-start items-end flex-col rounded-md `}>
@@ -46,7 +59,7 @@ export default function FlightConfirmModal( {flight }:{flight : FlightSearchInfo
                     <p className="flex text-3xl"><FaLocationDot className="w-[30px] h-[30px]"></FaLocationDot> {flight.arrivalairport} ({flight.arrivalairportid})</p>
                     </div>
                 </div>
-                <button onClick={() =>InsertBookingInformation(flight)} className="BlueBtn w-[250px] h-[50px] text-lg">Book from now ${flight.price}</button>
+                <button onClick={() => handleClick()} className="BlueBtn w-[250px] h-[50px] text-lg">Book from now ${flight.price}</button>
               </div>
            </dialog>
             <button   className="BlueBtn w-[150px] h-[50px]" onClick={openDialog}>Select This Flight</button>

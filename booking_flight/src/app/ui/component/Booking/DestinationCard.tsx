@@ -58,7 +58,7 @@ export default function DestinationCard({ type, city, airport,inputCity,inputCou
                         LocationData2.map((l) => (
                             <li onClick={() => handleClick(l.city,l.name,l.country)}  
                             className="flex justify-start items-center gap-2 hover:bg-slate-300" 
-                            key={l.locationid}>
+                            key={l.airportid}>
                                 <p>✈️</p>
                                 <div>
                                <h5 className="text-xl font-semibold font-sans">{l.city}</h5>

@@ -3,9 +3,13 @@ import SideSearchBar from "../ui/component/flight/sideSearchBar";
 import FlightsCard from "../ui/component/flight/flightsCard";
 import { fetchDepartFlight } from "../lib/data";
 import { FlightSearchInformation } from "../lib/definition";
+import { searchParamInformation } from "../lib/definition";
 import FlightConfirmModal from "../ui/component/bookingFlight/FlightConfirmModal";
-export default async function Page() {
-    const SearchedFlights = await fetchDepartFlight();
+export default async function Page(
+    { searchParams } :
+    { searchParams : searchParamInformation }
+) {
+    const SearchedFlights = await fetchDepartFlight({ searchParams });
     
     
     return (
@@ -25,7 +29,7 @@ export default async function Page() {
                     <div className="flex flex-col justify-center items-end py-2 px-3 gap-8   w-full">
                         {
                             SearchedFlights.map((flight : FlightSearchInformation) => (
-                                <FlightsCard key={flight.flightid} flight={flight}></FlightsCard>
+                                <FlightsCard key={flight.flightid} searchParams={searchParams} flight={flight}></FlightsCard>
                             ))
                         }
                     </div>

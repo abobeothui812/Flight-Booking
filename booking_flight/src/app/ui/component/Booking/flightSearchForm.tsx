@@ -6,39 +6,79 @@ import DestinationCard from "./DestinationCard";
 import TypeCard from "./TypeCard";
 import DateInput from "./dateInput";
 import clsx from "clsx";
+import createUrl from "next/router";
+import { useSearchParams,useRouter,usePathname } from "next/navigation";
 import Link from "next/link";
 import { poppins } from "../asset/font";
 import { buttons } from "@/app/lib/place-holder";
 import { Location } from "@/app/lib/definition";
 export default function FlightSearchForm( {LocationData} : {LocationData : Location[]}) {
     const initialState = {message: "",errors : {}};
-    
+    const pathname = usePathname();
+    const router = useRouter();
+    const { replace } = useRouter();
+    const searchParams = useSearchParams();
     const [selectedTicketType, setSelectedTicketType] = useState('One Way');
     const [state, dispatch] = useFormState(SearchFlight,initialState);
+    
     function handleButtonClick(value: string) {
     setSelectedTicketType(value);
     }
-    const cilentAction = async (formData : FormData) => {
+    const insertIntoUrl = async (event : React.FormEvent<HTMLFormElement>  ) => {
+
+        event.preventDefault();
+
+        const formData = new FormData(event.target as HTMLFormElement);
+
         const newFlight ={
-            fromCity : formData.get('fromCity'),
-            toCity : formData.get('toCity'),
-            fromCountry : formData.get('fromCountry'),
-            toCountry : formData.get('toCountry'),
+            fromCity : formData.get('fromCity') as string,
+            toCity : formData.get('toCity') as string,
+            fromCountry : formData.get('fromCountry') as string,
+            toCountry : formData.get('toCountry') as string,
             departureDate : formData.get('DepartureDate') as string,
             returnDate : formData.get('ReturnDate') as string,
-            seatClass : formData.get('seatClass'),
-            ticketType : formData.get('ticketType'),
-            TotalPassengers : formData.get('TotalPassengers'),
-            numberOfAdults : formData.get('Adults'),
-            numberOfChildren : formData.get('Children'),
-            numberOfInfants : formData.get('Infants'),
+            seatClass : formData.get('seatClass') as string,
+            ticketType : formData.get('ticketType') as string,
+            TotalPassengers : formData.get('TotalPassengers') as string,
+            numberOfAdults : formData.get('Adults') as string, 
+            numberOfChildren : formData.get('Children') as  string,
+            numberOfInfants : formData.get('Infants') as string,
 
         }
 
-        alert(`flight from ${newFlight.fromCity} in ${newFlight.fromCountry} to ${newFlight.toCity} in ${newFlight.toCountry} on ${newFlight.departureDate} and return on ${newFlight.returnDate} with ${newFlight.TotalPassengers}(${newFlight.numberOfChildren} children,${newFlight.numberOfAdults} adults, ${newFlight.numberOfInfants} infants) passengers with ${newFlight.ticketType} and ${newFlight.seatClass}`)
+        const newParam = new URLSearchParams(searchParams.toString());
+
+        if(newFlight.fromCity && newFlight.toCity && newFlight.departureDate && newFlight.returnDate && newFlight.seatClass && newFlight.ticketType && newFlight.TotalPassengers && newFlight.numberOfAdults && newFlight.numberOfChildren && newFlight.numberOfInfants){
+            newParam.set('from',newFlight.fromCity);
+            newParam.set('to',newFlight.toCity);
+            newParam.set('departDate',newFlight.departureDate);
+            newParam.set('returnDate',newFlight.returnDate);
+            newParam.set('seatClass',newFlight.seatClass);
+            newParam.set('ticketType',newFlight.ticketType);
+            newParam.set('TotalPassengers',newFlight.TotalPassengers);
+            newParam.set('numberOfAdults',newFlight.numberOfAdults);
+            newParam.set('numberOfChildren',newFlight.numberOfChildren);
+            newParam.set('numberOfInfants',newFlight.numberOfInfants);
+        }else{
+            newParam.delete('from');
+            newParam.delete('to');
+            newParam.delete('departDate');
+            newParam.delete('returnDate');
+            newParam.delete('seatClass');
+            newParam.delete('ticketType');
+            newParam.delete('TotalPassengers');
+            newParam.delete('numberOfAdults');
+            newParam.delete('numberOfChildren');
+            newParam.delete('numberOfInfants');
+
+        }
+        
+        console.log(newParam.toString());
+
+        router.push(`flight?${newParam.toString()}`);
     }
     return(
-        <form action={dispatch} className="rounded-3xl  mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] " >
+        <form onSubmit={insertIntoUrl} className="rounded-3xl  mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] " >
             <div className="flex-center"
 >            {
                 buttons.map((btn) => (
@@ -78,3 +118,4 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
 
 
 }
+

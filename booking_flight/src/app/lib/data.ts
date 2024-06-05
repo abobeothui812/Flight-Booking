@@ -106,3 +106,15 @@ export async function fetchReturnFlight(){
         throw error
     }
 }
+
+export async function fetchFlightid({params} : {params : {flightid : string}}){
+    try{
+        const client = await pool.connect();
+        const res = await client.query('select flightid from flight where flightid = $1', [params.flightid]);
+        client.release();
+        return res.rows
+    }catch(error){
+        console.log("error fetching data from DB:", error);
+        throw error
+    }
+}

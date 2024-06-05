@@ -1,6 +1,8 @@
 import { poppins } from "@/app/ui/component/asset/font"
 import PassengerDetailsForm from "@/app/ui/component/passengerDetails/passengerDetailsForm"
-export default async function Page(){
+import { fetchFlightid } from "@/app/lib/data";
+export default async function Page({ params } : {params : {flightid : string}}) {
+    const flight = await fetchFlightid({params});
     return(
         <main className="flex-center flex-col">
             <div className="w-3/4 border-2 mt-20 flex flex-col gap-7">

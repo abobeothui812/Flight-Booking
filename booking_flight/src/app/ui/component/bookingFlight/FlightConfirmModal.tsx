@@ -6,6 +6,7 @@ import { RiFlightTakeoffFill } from "react-icons/ri"
 import { RiCloseLargeFill } from "react-icons/ri"
 import { FlightSearchInformation,searchParamInformation } from "@/app/lib/definition"
 import { usePathname,useRouter,useSearchParams } from "next/navigation"
+import Link from "next/link"
 export default function FlightConfirmModal( {flight,searchParams }:{flight : FlightSearchInformation, searchParams : searchParamInformation}){
     const dialogRef = useRef<HTMLDialogElement>(null)
     const [dialogState,setDialogState] = useState(false);
@@ -30,17 +31,6 @@ export default function FlightConfirmModal( {flight,searchParams }:{flight : Fli
         setDialogState(false);
         
       };
-      const insertIntoUrl = ( ) => {
-
-        
-
-        const newParam = new URLSearchParams(searchParams.toString());
-        console.log(searchParams.toString());
-  
-        console.log(newParam.toString());
-
-        router.push(`dashboard/flight?`);
-    }
       
     return(
         <>
@@ -59,7 +49,7 @@ export default function FlightConfirmModal( {flight,searchParams }:{flight : Fli
                     <p className="flex text-3xl"><FaLocationDot className="w-[30px] h-[30px]"></FaLocationDot> {flight.arrivalairport} ({flight.arrivalairportid})</p>
                     </div>
                 </div>
-                <button onClick={() => handleClick()} className="BlueBtn w-[250px] h-[50px] text-lg">Book from now ${flight.price}</button>
+                <Link href={`flight/${flight.flightid}&$/passengerDetails?seattype=${searchParams.seatClass}`} className="BlueBtn w-[250px] h-[50px] text-lg">Book from now ${flight.price}</Link>
               </div>
            </dialog>
             <button   className="BlueBtn w-[150px] h-[50px]" onClick={openDialog}>Select This Flight</button>

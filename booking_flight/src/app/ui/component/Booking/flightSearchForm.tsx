@@ -14,12 +14,13 @@ import { buttons } from "@/app/lib/place-holder";
 import { Location } from "@/app/lib/definition";
 export default function FlightSearchForm( {LocationData} : {LocationData : Location[]}) {
     const initialState = {message: "",errors : {}};
-    const router = useRouter();
     const pathname = usePathname();
+    const router = useRouter();
     const { replace } = useRouter();
+    const searchParams = useSearchParams();
     const [selectedTicketType, setSelectedTicketType] = useState('One Way');
     const [state, dispatch] = useFormState(SearchFlight,initialState);
-    const searchParams = useSearchParams();
+    
     function handleButtonClick(value: string) {
     setSelectedTicketType(value);
     }
@@ -44,7 +45,6 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
             numberOfInfants : formData.get('Infants') as string,
 
         }
-        alert(`This flight from ${newFlight.fromCity} to ${newFlight.toCity} on ${newFlight.departureDate} and return on ${newFlight.returnDate} with ${newFlight.TotalPassengers} passengers`)
 
         const newParam = new URLSearchParams(searchParams.toString());
 
@@ -75,7 +75,7 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
         
         console.log(newParam.toString());
 
-        replace(`${pathname}?${newParam.toString()}`)
+        router.push(`flight?${newParam.toString()}`);
     }
     return(
         <form onSubmit={insertIntoUrl} className="rounded-3xl  mt-20  border-2 flex-center  flex-col shadow-md  w-[1300px] px-2 h-[400px] " >

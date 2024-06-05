@@ -12,7 +12,19 @@ export type Flight ={
     availableSeats_Business: number,
     availableSeats_FirstClass: number,
 }
+export type searchParamInformation ={
+    from : string,
+    to : string,
+    departDate : string,
+    returnDate : string,
+    seatClass : string,
+    ticketType : string,
+    TotalPassengers : string,
+    numberOfAdults : string,
+    numberOfChildren : string,
+    numberOfInfants : string,
 
+}
 export type FlightSearchInformation ={
     flightid: string,
     flightnumber : string, 

@@ -1,5 +1,6 @@
+import { useSearchParams } from 'next/navigation';
 import pool from "../ultis/pgDB";
-
+import { searchParamInformation } from './definition';
 export async function fetchLocation(){
     try{
         const client = await pool.connect();
@@ -13,8 +14,14 @@ export async function fetchLocation(){
     }
 }
 
-export async function fetchDepartFlight(){
+export async function fetchDepartFlight( {
+    searchParams
+}:{
+    searchParams :searchParamInformation
+}
+){
     try{
+        
         const client = await pool.connect();
         console.log('Connected to database in here');
         const res = await client.query(`
@@ -30,15 +37,13 @@ export async function fetchDepartFlight(){
             f.ArrivalAirportID,
             f.price,
             a.airlinename,
-            test.tickettype,
-            test.seatclass,
             Depart.AirportName AS DepartAirport,
             Arrive.AirportName AS ArrivalAirport,
             Depart.City AS DepartCity,
             Depart.Country AS DepartCountry,
             Arrive.City AS ArrivalCity,
             Arrive.Country AS ArrivalCountry,
-            (test.numberOfAdults + test.numberOfChildren + test.numberOfInfants)  AS TotalOfSeat
+            (CAST($1 AS DECIMAL) + CAST($2 AS DECIMAL)+ CAST($3 AS DECIMAL))  AS TotalOfSeat
         FROM 
             Flight f
         JOIN 
@@ -47,11 +52,11 @@ export async function fetchDepartFlight(){
             Airport Arrive ON f.ArrivalAirportID = Arrive.AirportID
         JOIN 
             Airline A ON f.AirlineID = A.AirlineID
-        JOIN 
-            TEST ON Depart.city = test.from1
-                AND Arrive.city = test.to1
-                AND DATE(f.DepartTime) = test.departDate;
-                `);
+        WHERE 
+                Depart.city = $4
+                AND Arrive.city = $5
+                AND DATE(f.DepartTime) = $6;
+                `, [searchParams.numberOfAdults,searchParams.numberOfChildren,searchParams.numberOfInfants ,searchParams.from, searchParams.to, searchParams.departDate]);
         client.release();
         return res.rows;
     }catch(error){

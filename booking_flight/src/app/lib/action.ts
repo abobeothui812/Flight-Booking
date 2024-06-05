@@ -100,8 +100,8 @@ export async function InsertBookingInformation( flight : FlightSearchInformation
       message: 'Database Error: Failed to Insert Booking Information.',
     };
     } finally{
-      revalidatePath('/flight/booking/passengerDetails');
-      redirect('/flight/booking/passengerDetails');
+      revalidatePath('/flight/passengerDetails');
+      redirect('/flight/passengerDetails');
     }
   
 }

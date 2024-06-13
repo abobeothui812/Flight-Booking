@@ -13,6 +13,7 @@ export type Flight ={
     availableSeats_FirstClass: number,
 }
 export type searchParamInformation ={
+    get(arg0: string): unknown;
     from : string,
     to : string,
     departDate : string,
@@ -51,3 +52,31 @@ export type Location ={
     country : string;
     name : string;
 };
+
+export type PassengerArray ={
+    numberOfpeole : number,
+    name : string,
+}
+    
+export type bookingInformation ={
+    bookingid: string,
+    flightid : string,
+    num_of_adult : number,
+    num_of_child : number,
+    num_of_infant : number,
+    seattype : string,
+    passenger_book : string,
+    paymentstatus : string,
+    totalprice : number,
+}
+
+export type PassengerInformation ={
+    bookingid : string,
+    papposrtnum : string,
+    firstname : string,
+    lastname : string,
+    nationality : string,
+    birthdate : string,
+    gender : string,
+    seatfor : string,
+}

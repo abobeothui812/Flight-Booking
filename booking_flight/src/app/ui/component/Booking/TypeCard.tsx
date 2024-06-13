@@ -7,7 +7,7 @@ export default function TypeCard() {
     const [searchMenuState,setSearchMenuState] = useState(false);
     const node = useRef<HTMLDivElement>(null);
     const  [numberOfTravelers, setNumberOfTravelers] = useState(1);
-    const  [numberOfAdults, setNumberOfAdults] = useState(0);
+    const  [numberOfAdults, setNumberOfAdults] = useState(1);
     const  [numberOfChildren, setNumberOfChildren] = useState(0);
     const  [numberOfInfants, setNumberOfInfants] = useState(0);
     const  [seatClass, setSeatClass] = useState("First Class");

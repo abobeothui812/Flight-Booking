@@ -118,3 +118,76 @@ export async function fetchFlightid({params} : {params : {flightid : string}}){
         throw error
     }
 }
+
+export async function fetchBookingid({params} : {params : {bookingid : string}}){
+    try{
+        const client = await pool.connect();
+        const res = await client.query('select * from booking where bookingid = $1', [params.bookingid]);
+        client.release();
+        return res.rows[0];
+    }catch(error){
+        console.log("error fetching data from DB:", error);
+        throw error
+    }
+}
+
+export async function fetchBookedFlight({flightid}:{flightid: string}){
+    try{
+        const client = await pool.connect();
+        const res = await client.query(`
+            SELECT
+            f.FlightNumber,
+            TO_CHAR(departtime, 'YYYY-MM-DD') as DepartDate, 
+            TO_CHAR(arrivaltime, 'YYYY-MM-DD') as ArrivalDate,
+            TO_CHAR(departtime, 'HH24:MI') as DepartTime1, 
+            TO_CHAR(arrivaltime, 'HH24:MI') as ArrivalTime1,
+            TO_CHAR(arrivaltime-departtime,'HH24:MI') as timeofflight,
+            f.DepartAirportID,
+            f.ArrivalAirportID,
+            a.airlinename,
+            Depart.City AS DepartCity,
+            Arrive.City AS ArrivalCity
+        FROM 
+            Flight f
+        JOIN 
+            Airport Depart ON f.DepartAirportID = Depart.AirportID
+        JOIN 
+            Airport Arrive ON f.ArrivalAirportID = Arrive.AirportID
+        JOIN 
+            Airline A ON f.AirlineID = A.AirlineID
+        WHERE 
+                f.flightid =$1`, [flightid]);
+        client.release();
+        return res.rows[0];
+    }catch(error){
+        console.log("error fetching data from DB:", error);
+        throw error
+    }
+}
+
+export async function fetchBooking({Bookingid}:{Bookingid: string}){
+    try{
+        const client = await pool.connect();
+        const res = await client.query(`
+            SELECT * from booking where bookingid = $1`, [Bookingid]);
+        client.release();
+        return res.rows[0];
+    }catch(error){
+        console.log("error fetching data from DB:", error);
+        throw error
+    }
+}
+
+export async function fetchBookingPassenger({Bookingid}:{Bookingid: string}){
+    try{
+        const client = await pool.connect();
+        const res = await client.query(`
+            SELECT * from bookingpassenger where bookingid = $1`, [Bookingid]);
+        client.release();
+        return res.rows;
+    }catch(error){
+        console.log("error fetching data from DB:", error);
+        throw error
+    }
+}
+

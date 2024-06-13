@@ -1,44 +1,45 @@
 CREATE TABLE Airport (
     AirportID VARCHAR(5) PRIMARY KEY, --ICAO Code
-    AirportName VARCHAR(100),
-    City VARCHAR(100),
-    Country VARCHAR(100)
+    AirportName VARCHAR(100) NOT NULL,
+    City VARCHAR(100) NOT NULL,
+    Country VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Airline (
     AirlineID VARCHAR(9) PRIMARY KEY, --AL XXX XXXX
-    AirlineName VARCHAR(100)
+    AirlineName VARCHAR(100) NOT NULL
 );
 CREATE TABLE Flight (
     FlightID VARCHAR(10) PRIMARY KEY, --FID XXX XXXX
-    FlightNumber VARCHAR(11), --Số hiệu chuyến bay FNUM XXXX
-    AircraftType VARCHAR(9), --Loại máy bay AT XXX XXXX
-    AirlineID VARCHAR(9),
-    DepartTime TIMESTAMP WITH TIME ZONE, 
-    ArrivalTime TIMESTAMP WITH TIME ZONE,
-    DepartAirportID VARCHAR(5),
-    ArrivalAirportID VARCHAR(5),
+    FlightNumber VARCHAR(11) NOT NULL, --Số hiệu chuyến bay FNUM XXXX
+    AircraftType VARCHAR(30), --Loại máy bay AT XXX XXXX
+    AirlineID VARCHAR(9) NOT NULL,
+    DepartTime TIMESTAMP WITH TIME ZONE NOT NULL, 
+    ArrivalTime TIMESTAMP WITH TIME ZONE NOT NULL ,
+    Check(ArrivalTime > DepartTime)
+    DepartAirportID VARCHAR(5) NOT NULL,
+    ArrivalAirportID VARCHAR(5) NOT NULL,
     AvailableSeat_Economy INT DEFAULT 400,
     AvailableSeat_Business INT DEFAULT 200,
     AvailableSeat_FirstClass INT DEFAULT 10,
-    Price MONEY,
+    Price MONEY NOT NULL,
     FOREIGN KEY (AirlineID) REFERENCES Airline(AirlineID),
     FOREIGN KEY (DepartAirportID) REFERENCES Airport(AirportID),
     FOREIGN KEY (ArrivalAirportID) REFERENCES Airport(AirportID)
 );
 
-CREATE TABLE Passenger (
-    PassengerID  serial PRIMARY KEY, --PID XXX XXXX 
-    FirstName VARCHAR(100),
-    LastName VARCHAR(100),
-    Mail VARCHAR(100),
-    Phone VARCHAR(20)
+CREATE TABLE Users (
+    UserID serial PRIMARY KEY, --PID XXX XXXX 
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Mail VARCHAR(100) NOT NULL
+    Phone Varchar(100)
 );
 
 CREATE TABLE Booking (
     BookingID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     FlightID VARCHAR(10),
-    Passenger_Book VARCHAR(10),
+    UserID serial --Người đặt chuyến bay
     PaymentStatus VARCHAR(20) DEFAULT 'Pending',
     TotalPrice MONEY,
     num_of_adult INT,
@@ -46,20 +47,32 @@ CREATE TABLE Booking (
 	num_of_infant INT,
     SeatType VARCHAR(20), --Eco/Busi/First
     FOREIGN KEY (FlightID) REFERENCES Flight(FlightID),
-    FOREIGN KEY (Passenger_Book) REFERENCES Passenger(PassengerID)
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+
 CREATE TABLE BookingPassenger(
     BookingID UUID,
     PassportNum VARCHAR(50),
-    FirstName VARCHAR(100),
-    LastName VARCHAR(100),
-    SeatFor VARCHAR(20), --Adult/Child/Baby
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
     Nationality VARCHAR(100),
-    BirthDate date,
+    BirthDate DATE,
     Gender VARCHAR(10),
-    PRIMARY KEY(BookingID,PassportNum),
-    FOREIGN KEY(BookingID) REFERENCES Booking(BookingID)
-)
+    SeatFor VARCHAR(20), --Adult/Child/Baby
+    PRIMARY KEY(BookingID, PassportNum),
+    FOREIGN KEY(BookingID) REFERENCES Booking(BookingID),
+    FOREIGN KEY(FlightID) REFERENCES Flight(FlightID),
+    CONSTRAINT uniquePassenger UNIQUE (FlightID, PassportNum)
+);
+
+CREATE TABLE Payment (
+    PaymentID VARCHAR(10) PRIMARY KEY, --PmID XXX XXXX
+    BookingID uuid,
+    Method VARCHAR(50),
+    Amount MONEY,
+    TransactionDate TIMESTAMP DEFAULT NULL,
+    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
+);
 --Mỗi khi tạo insert booking thì sẽ có tương ứng số bảng bookingpassenger được tạo bằng với số lượng từng loại ghế
 CREATE OR REPLACE FUNCTION create_booking_passenger_entries()
 RETURNS TRIGGER AS $$
@@ -201,40 +214,34 @@ DECLARE
     total_price MONEY;
 BEGIN
     -- Calculate the total price
-    total_price := 
+    total_price = 
         NEW.num_of_adult * 
         CASE 
             WHEN NEW.SeatType = 'Economy' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID)
             WHEN NEW.SeatType = 'Business' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 2
-            WHEN NEW.SeatType = 'FirstClass' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15
+            WHEN NEW.SeatType = 'First Class' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15
         END +
         NEW.num_of_child * 
         CASE 
             WHEN NEW.SeatType = 'Economy' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 0.4
             WHEN NEW.SeatType = 'Business' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 2 * 0.4
-            WHEN NEW.SeatType = 'FirstClass' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15 * 0.4
+            WHEN NEW.SeatType = 'First Class' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15 * 0.4
         END +
-        NEW.num_of_infant_is * 
+        NEW.num_of_infant * 
         CASE 
             WHEN NEW.SeatType = 'Economy' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 0.1
             WHEN NEW.SeatType = 'Business' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 2 * 0.1
-            WHEN NEW.SeatType = 'FirstClass' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15 * 0.1
+            WHEN NEW.SeatType = 'First Class' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15 * 0.1
         END +
-        NEW.num_of_infant_ol * 
-        CASE 
-            WHEN NEW.SeatType = 'Economy' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 0.05
-            WHEN NEW.SeatType = 'Business' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 2 * 0.05
-            WHEN NEW.SeatType = 'FirstClass' THEN (SELECT Price FROM Flight WHERE FlightID = NEW.FlightID) * 15 * 0.05
-        END;
 
     -- Update the TotalPrice column
-    NEW.TotalPrice := total_price;
+    NEW.TotalPrice = total_price;
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER calculate_total_price_after_booking_insert_trigger
-BEFORE INSERT ON Booking
+after INSERT ON Booking
 FOR EACH ROW
 EXECUTE FUNCTION CalculateTotalPrice();

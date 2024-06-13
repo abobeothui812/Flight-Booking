@@ -14,9 +14,7 @@ import { buttons } from "@/app/lib/place-holder";
 import { Location } from "@/app/lib/definition";
 export default function FlightSearchForm( {LocationData} : {LocationData : Location[]}) {
     const initialState = {message: "",errors : {}};
-    const pathname = usePathname();
     const router = useRouter();
-    const { replace } = useRouter();
     const searchParams = useSearchParams();
     const [selectedTicketType, setSelectedTicketType] = useState('One Way');
     const [state, dispatch] = useFormState(SearchFlight,initialState);

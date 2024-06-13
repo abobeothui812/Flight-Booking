@@ -5,14 +5,11 @@ import { FaLocationDot } from "react-icons/fa6"
 import { RiFlightTakeoffFill } from "react-icons/ri"
 import { RiCloseLargeFill } from "react-icons/ri"
 import { FlightSearchInformation,searchParamInformation } from "@/app/lib/definition"
-import { usePathname,useRouter,useSearchParams } from "next/navigation"
+import { BookFlight } from "@/app/lib/action"
 import Link from "next/link"
-export default function FlightConfirmModal( {flight,searchParams }:{flight : FlightSearchInformation, searchParams : searchParamInformation}){
+export default function FlightConfirmModal( {bookingid,flight,searchParams }:{bookingid : string,flight : FlightSearchInformation, searchParams : searchParamInformation}){
     const dialogRef = useRef<HTMLDialogElement>(null)
     const [dialogState,setDialogState] = useState(false);
-    const pathName = usePathname();
-    const router = useRouter();
-    const [passengerDetails,setPassengerDetails] = useState(false);
     flight.departdate = new Date(flight.departdate).toLocaleDateString('en-US', {
       weekday: 'long', 
       year: 'numeric', 
@@ -49,7 +46,8 @@ export default function FlightConfirmModal( {flight,searchParams }:{flight : Fli
                     <p className="flex text-3xl"><FaLocationDot className="w-[30px] h-[30px]"></FaLocationDot> {flight.arrivalairport} ({flight.arrivalairportid})</p>
                     </div>
                 </div>
-                <Link href={`flight/${flight.flightid}&$/passengerDetails?seattype=${searchParams.seatClass}`} className="BlueBtn w-[250px] h-[50px] text-lg">Book from now ${flight.price}</Link>
+                <Link href={`flight/${flight.flightid}/passengerDetails/${bookingid}`}
+                 className="BlueBtn w-[250px] h-[50px] flex-center text-lg">Book from now ${flight.price}</Link>
               </div>
            </dialog>
             <button   className="BlueBtn w-[150px] h-[50px]" onClick={openDialog}>Select This Flight</button>

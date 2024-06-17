@@ -5,90 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { searchParamInformation,FlightSearchInformation } from "./definition";
 import { signIn } from "next-auth/react";
-export type State = {
-    errors?: {
-        from?: string[];
-        to?: string[];
-        departureDate?: string[];
-        returnDate?: string[];
-        seatClass?: string[];
-        ticketType?: string[];
-        TotalPassengers?: string[];
-        numberOfAdults?: string[];
-        numberOfChildren?: string[];
-        numberOfInfants?: string[];
 
-    };
-    message?: string | null;
-  };
-const FlightSearchFormSchema = z.object({
-    
-    fromCity: z.string({
-      invalid_type_error: "Please select  which city you are flying from",
-    }),
-    toCity: z.string({
-      invalid_type_error: "Please select  which city you are flying to",
-    }),
-    fromCountry: z.string(),
-    toCountry: z.string(),
-    departureDate: z.string(),
-    returnDate: z.string(),
-    seatClass: z.enum(['Economy','Business','First Class'],{
-      invalid_type_error: "Please select a valid seat class",
-    }),
-    ticketType: z.enum(['One Way','Rounded Trip'],{
-      invalid_type_error: "Please select a valid ticket type",
-    
-    }),
-    TotalPassengers: z.coerce.number(),
-    numberOfAdults: z.coerce.number(),
-    numberOfChildren: z.coerce.number(),
-    numberOfInfants: z.coerce.number(),
 
-});
-export async function SearchFlight(prevState: State, formData : FormData) {
-    const validatedFields = FlightSearchFormSchema.safeParse({
-      fromCity : formData.get('fromCity'),
-      toCity : formData.get('toCity'),
-      fromCountry : formData.get('fromCountry'),
-      toCountry : formData.get('toCountry'),
-      departureDate : formData.get('DepartureDate') as string,
-      returnDate : formData.get('ReturnDate') as string,
-      seatClass : formData.get('seatClass') ,
-      ticketType : formData.get('ticketType'),
-      TotalPassengers : formData.get('TotalPassengers'),
-      numberOfAdults : formData.get('Number'),
-      numberOfChildren : formData.get('Children'),
-      numberOfInfants : formData.get('Infants'),
-    });
-
-    if (!validatedFields.success) {
-        return {  errors: validatedFields.error.flatten().fieldErrors,
-          message: 'Missing Fields. Failed to Search Flights.' };
-    }
-
-    const { fromCity , toCity, fromCountry, toCountry , departureDate , returnDate , seatClass , ticketType , TotalPassengers , numberOfAdults , numberOfChildren , numberOfInfants } = validatedFields.data;
-    
-    try {
-      const client = await pool.connect();
-      const res = await client.query(
-        `CALL InsertAndReplaceTest($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [fromCity, toCity, returnDate, departureDate, seatClass, ticketType, TotalPassengers, numberOfAdults, numberOfChildren, numberOfInfants]
-      );
-      client.release();
-      return {
-        message: 'Flight Search Successful.',
-      };
-    } catch (error) {
-      return {
-        message: 'Database Error: Failed to Saeach Flights.',
-      };
-    } finally {
-      revalidatePath('/flight');
-       redirect('/flight');
-    }
-    
-}
 
 const UserDetailsSchema = z.object({
     FirstName: z.string(),
@@ -148,16 +66,16 @@ export async function SaveUserDetails(prevState: UserState, formData : FormData)
 }
 
 const bookingSchema = z.object({
-    flightid: z.string(),
+    flightnumber: z.string(),
     adults: z.string(),
     children: z.string(),
     infants: z.string(),
     seattype: z.string(),
 });
 
-export async function BookFlight(flightid1: string, searchParam : searchParamInformation) {
+export async function BookFlight(flightNumber: string, searchParam : searchParamInformation) {
     const validatedFields = bookingSchema.safeParse({
-      flightid : flightid1 || null,
+      flightnumber : flightNumber || null,
       adults : searchParam.numberOfAdults || null,
       children : searchParam.numberOfChildren || null,
       infants : searchParam.numberOfInfants || null,
@@ -169,16 +87,16 @@ export async function BookFlight(flightid1: string, searchParam : searchParamInf
           message: 'Missing Fields. Failed to Book Flight.' };
     }
 
-    const { flightid, adults,children,infants,seattype } = validatedFields.data;
+    const { flightnumber, adults,children,infants,seattype } = validatedFields.data;
     console.log(validatedFields.data);
     try {
       const client = await pool.connect();
       const res = await client.query(
-        `select insert_booking($1,null,$2,$3,$4,$5)`,
-        [flightid, adults, children, infants, seattype]
+        `select insertbooking($1,$2,$3,$4,$5)`,
+        [flightnumber, adults, children, infants, seattype]
       );
       client.release();
-      const bookingId = res.rows[0].insert_booking;
+      const bookingId = res.rows[0].insertbooking;
       console.log('Booking ID:', bookingId);
       return  bookingId ;
     } catch (error) {
@@ -198,12 +116,14 @@ const OtherPassengerSchema = z.object({
     Passport: z.string(),
     Nationality: z.string(),
     DOB: z.string(),
-    Gender : z.enum(['Male','Female','Prefer not to say']),
+    Gender : z.enum(['Male','Female','Others']),
     BookingID: z.string(),
     Seatfor: z.string(),
+    flightid: z.string(),
 });
 export type OtherPassengerState = {
     errors?: {
+        flightid?: string[];
         FirstName?: string[];
         LastName?: string[];
         Passport?: string[];
@@ -225,6 +145,7 @@ export async function SaveOtherPassengerDetails(prevState : OtherPassengerState,
       BookingID : formData.get('bookingid') || null,
       Seatfor : formData.get('seatfor') || null,
       Gender : formData.get('Gender') || null,
+      flightid : formData.get('flightid') || null,
    });
      
       if (!validatedFields.success) {
@@ -232,14 +153,14 @@ export async function SaveOtherPassengerDetails(prevState : OtherPassengerState,
             message: 'Missing Fields. Failed to Save Other Passenger Details.' };
       }
   
-      const { FirstName , LastName, Passport, Nationality, DOB , BookingID, Seatfor, Gender } = validatedFields.data;
+      const { FirstName , LastName, Passport, Nationality, DOB , BookingID, Seatfor, Gender, flightid } = validatedFields.data;
 
       try {
         console.table(validatedFields.data);
         const client = await pool.connect();
         const res = await client.query(
-          `insert into bookingpassenger(bookingid,passportnum,firstname,lastName, seatfor,nationality,birthdate,gender) values($1,$2,$3,$4,$5,$6,$7,$8)`,
-          [BookingID,Passport,FirstName, LastName,Seatfor, Nationality, DOB, Gender ]
+          `insert into bookingpassenger(bookingid,flightid,passportnum,firstname,lastName, seatfor,nationality,birthdate,gender) values($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+          [BookingID,flightid,Passport,FirstName, LastName,Seatfor, Nationality, DOB, Gender ]
         );
         client.release();
         return {
@@ -251,4 +172,135 @@ export async function SaveOtherPassengerDetails(prevState : OtherPassengerState,
             error: error
           };
   }
+}
+
+export type Paymentstate= {
+  errors?: {
+      Bookingid?: string[];
+      Method?: string[];
+      Amount?: string[];
+      TransactionDate?: string[];
+  };
+  message?: string | null;
+};
+const paymentSchema = z.object({
+  BookingID: z.string({
+    invalid_type_error: "Please select  which city you are flying to",
+  }),
+  Method: z.string({
+    invalid_type_error: "Please select  which city you are flying to",
+  }),
+  TransactionDate: z.string({
+    invalid_type_error: "Please select  which city you are flying to",
+  }),
+  Amount : z.string({
+    invalid_type_error: "Please select  which city you are flying to",
+  }),
+});
+export async function SavePaymentDetails(prevState : Paymentstate,formData : FormData) {
+  const validatedFields = paymentSchema.safeParse({
+      BookingID : formData.get('Bookingid') || null,
+      Method : formData.get('paymentMethod') || null,
+      TransactionDate : formData.get("TransactionDate") || null,
+      Amount : formData.get('Amount') || null,
+ });
+   
+    if (!validatedFields.success) {
+        return {  errors: validatedFields.error.flatten().fieldErrors,
+          message: 'Missing Fields. Failed to Save Other Passenger Details.' };
+    }
+
+    const { BookingID , Method , TransactionDate,Amount} = validatedFields.data;
+
+    try {
+      console.table(validatedFields.data);
+      const client = await pool.connect();
+      const res = await client.query(
+       `call insert_payment_and_update_status($1,$2,$3,$4);`,
+        [BookingID,Method,Amount,TransactionDate ]
+      );
+      client.release();
+      return {
+        message: 'Other Passenger Details Saved Successfully.',
+      }}catch (error) {
+        console.error('Failed to save user details:', error);
+        return {
+          message: 'Failed to Save User Details due to an error.',
+          error: error
+        };
+}
+}
+
+export type Flightstate = {
+  errors?: {
+      flightid? : string[];
+      flightnumber?: string[];
+      airlineid ?: string[];
+      aircrafttype?: string[];
+      departTime?: string[];
+      arrivalTime?: string[];
+      departAirportCode?: string[];
+      arrivalAirportCode?: string[];
+      availableSeats_Eco?: string[];
+      availableSeats_Business?: string[];
+      availableSeats_FirstClass?: string[];
+  };
+  message?: string | null;
+};
+
+const FlightSchema = z.object({
+  flightid: z.string(),
+  flightnumber: z.string(),
+  airlineid: z.string(),
+  aircrafttype: z.string(),
+  departTime: z.string(),
+  arrivalTime: z.string(),
+  departAirportCode: z.string(),
+  arrivalAirportCode: z.string(),
+  availableSeats_Eco: z.string(),
+  availableSeats_Business: z.string(),
+  availableSeats_FirstClass: z.string(),
+});
+
+export async function CreateFlight(prevState : Flightstate,formData : FormData) {
+  const validatedFields = FlightSchema.safeParse({
+    flightid : formData.get('flightid'),
+    flightnumber : formData.get('flightnumber'),
+    airlineid : formData.get('airlineid'),
+    aircrafttype : formData.get('aircrafttype'),
+    departTime : formData.get('departuredate'),
+    arrivalTime : formData.get('arrivaldate'),
+    departAirportCode : formData.get('departcitycode'),
+    arrivalAirportCode : formData.get('arrivalcitycode'),
+    availableSeats_Eco : formData.get('economy'),
+    availableSeats_Business : formData.get('bussiness'),
+    availableSeats_FirstClass : formData.get('firsclass'),
+  }); 
+  if (!validatedFields.success) {
+      return {  errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Save Other Passenger Details.' };
+  }
+  
+  const { flightid, flightnumber, airlineid, aircrafttype, departTime, arrivalTime, departAirportCode, arrivalAirportCode, availableSeats_Eco, availableSeats_Business, availableSeats_FirstClass } = validatedFields.data;
+
+  try {
+    console.table(validatedFields.data);
+    console.log('Data:', validatedFields.data);
+    const client = await pool.connect();
+    const
+    res = await client.query(
+      `insert into flight(flightid, flightnumber, airlineid, aircrafttype, departtime, arrivaltime, departairportid, arrivalairportid, availableseat_economy, availableseat_business, availableseat_firstclass) values($1,$2,$3,$4,$5,$6,$7,$8,cast($9 as decimal),cast($10 as decimal),cast($11 as decimal))`,
+      [flightid, flightnumber, airlineid, aircrafttype, departTime, arrivalTime, departAirportCode, arrivalAirportCode, availableSeats_Eco, availableSeats_Business, availableSeats_FirstClass]
+    );
+    client.release();
+    return {
+      message: 'Flight Details Saved Successfully.',
+    }}
+    catch (error) {
+    console.error('Failed to save user details:', error);
+    return {
+      message: 'Failed to Save User Details due to an error.',
+      error: error
+    };
+    }
 }

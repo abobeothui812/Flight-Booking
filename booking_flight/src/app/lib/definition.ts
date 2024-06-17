@@ -28,6 +28,7 @@ export type searchParamInformation ={
 export type FlightSearchInformation ={
     flightid: string,
     flightnumber : string, 
+    aircrafttype : string,
     departairport : string,
     arrivalairport : string,
     departairportid: string,

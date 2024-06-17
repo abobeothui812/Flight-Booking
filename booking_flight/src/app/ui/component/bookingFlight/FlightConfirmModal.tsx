@@ -46,7 +46,7 @@ export default function FlightConfirmModal( {bookingid,flight,searchParams }:{bo
                     <p className="flex text-3xl"><FaLocationDot className="w-[30px] h-[30px]"></FaLocationDot> {flight.arrivalairport} ({flight.arrivalairportid})</p>
                     </div>
                 </div>
-                <Link href={`flight/${flight.flightid}/passengerDetails/${bookingid}`}
+                <Link href={`flight/${flight.flightnumber}/passengerDetails/${bookingid}`}
                  className="BlueBtn w-[250px] h-[50px] flex-center text-lg">Book from now ${flight.price}</Link>
               </div>
            </dialog>

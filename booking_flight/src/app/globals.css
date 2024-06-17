@@ -30,7 +30,7 @@
       @apply  transition duration-500 ease-in-out ;
     }
 
-    .overflow{
-      @apply overflow-hidden text-nowrap text-ellipsis;
+    .overflow1{
+      @apply overflow-hidden text-nowrap  text-ellipsis whitespace-nowrap;
     }
   }

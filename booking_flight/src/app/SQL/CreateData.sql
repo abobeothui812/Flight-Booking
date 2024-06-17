@@ -12,13 +12,13 @@ CREATE TABLE Airline (
 CREATE TABLE Flight (
     FlightID VARCHAR(10) PRIMARY KEY, --FID XXX XXXX
     FlightNumber VARCHAR(11) NOT NULL, --Số hiệu chuyến bay FNUM XXXX
-    AircraftType VARCHAR(30), --Loại máy bay AT XXX XXXX
+    AircraftType VARCHAR(20), --Loại máy bay AT XXX XXXX
     AirlineID VARCHAR(9) NOT NULL,
     DepartTime TIMESTAMP WITH TIME ZONE NOT NULL, 
     ArrivalTime TIMESTAMP WITH TIME ZONE NOT NULL ,
     Check(ArrivalTime > DepartTime)
-    DepartAirportID VARCHAR(5) NOT NULL,
-    ArrivalAirportID VARCHAR(5) NOT NULL,
+    DepartAirportID VARCHAR(6) NOT NULL,
+    ArrivalAirportID VARCHAR(6) NOT NULL,
     AvailableSeat_Economy INT DEFAULT 400,
     AvailableSeat_Business INT DEFAULT 200,
     AvailableSeat_FirstClass INT DEFAULT 10,
@@ -52,6 +52,7 @@ CREATE TABLE Booking (
 
 CREATE TABLE BookingPassenger(
     BookingID UUID,
+    FlightID VARCHAR(10),
     PassportNum VARCHAR(50),
     FirstName VARCHAR(100) NOT NULL,
     LastName VARCHAR(100) NOT NULL,
@@ -64,9 +65,8 @@ CREATE TABLE BookingPassenger(
     FOREIGN KEY(FlightID) REFERENCES Flight(FlightID),
     CONSTRAINT uniquePassenger UNIQUE (FlightID, PassportNum)
 );
-
 CREATE TABLE Payment (
-    PaymentID VARCHAR(10) PRIMARY KEY, --PmID XXX XXXX
+    PaymentID PRIMARY KEY DEFAULT uuid_generate_v4(), --PmID XXX XXXX
     BookingID uuid,
     Method VARCHAR(50),
     Amount MONEY,
@@ -107,45 +107,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_booking_insert
-AFTER INSERT ON Booking
-FOR EACH ROW
-EXECUTE FUNCTION create_booking_passenger_entries();
-
-
-CREATE TABLE Payment (
-    PaymentID VARCHAR(11) PRIMARY KEY, --PmID XXX XXXX
-    BookingID UUID,
-    Method VARCHAR(50),
-    Amount MONEY,
-    TransactionDate TIMESTAMP DEFAULT NULL,
-    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
-);
-
-
-
--- Nếu có thời gian giao dịch, cập nhật bảng booking thành completed
-CREATE OR REPLACE FUNCTION UpdatePaymentStatusAfterInsert()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.TransactionDate IS NOT NULL THEN
-        UPDATE Booking
-        SET PaymentStatus = 'Completed',
-            TotalPrice = NEW.Amount
-        WHERE BookingID = NEW.BookingID;
-    ELSE
-        UPDATE Booking
-        SET PaymentStatus = 'Pending'
-        WHERE BookingID = NEW.BookingID;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_payment_status_after_insert_trigger
-AFTER INSERT ON Payment
-FOR EACH ROW
-EXECUTE FUNCTION UpdatePaymentStatusAfterInsert();
 
 
 -- Kiểm tra khi booking insert có đủ ghế không
@@ -242,6 +203,101 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER calculate_total_price_after_booking_insert_trigger
-after INSERT ON Booking
+BEFORe INSERT ON Booking
 FOR EACH ROW
 EXECUTE FUNCTION CalculateTotalPrice();
+
+
+--Các index nhằm tối ưu hóa việc truy vấn dữ liệu
+CREATE INDEX idx_flight_depart_arrival ON Flight(DepartAirportID, ArrivalAirportID, DepartTime, ArrivalTime);
+CREATE INDEX idx_booking_user ON Booking(UserID);
+CREATE INDEX idx_booking_status_user ON Booking(PaymentStatus, UserID);
+CREATE INDEX idx_booking_passenger_booking ON BookingPassenger(BookingID);
+CREATE INDEX idx_flight_airline ON Flight(AirlineID);
+
+
+--Lưu thông tin đặt vé(booking) -BookFlight()
+CREATE OR REPLACE FUNCTION insertbooking(
+    pflightnumber VARCHAR(20),
+    padults VARCHAR(20),
+    pchildren VARCHAR(20),
+    pinfants VARCHAR(20),
+    pseattype VARCHAR(20)
+)
+RETURNS UUID AS $$
+DECLARE
+    newid UUID;
+    pflightid VARCHAR(20);
+BEGIN
+    -- Select flightid based on flightnumber
+    SELECT flightid 
+    INTO pflightid
+    FROM flight 
+    WHERE flightnumber = pflightnumber;
+
+    -- Insert into Booking
+    INSERT INTO Booking (
+        flightid,
+        userid,
+        num_of_adult,
+        num_of_child,
+        num_of_infant,
+        SeatType
+    ) VALUES (
+        pflightid,
+        null, 
+        cast(padults as decimal),
+        cast(pchildren as decimal),
+        cast(pinfants as decimal),
+        pseattype
+    )
+    RETURNING bookingid INTO newid;
+
+    -- Return the new booking id
+    RETURN newid;
+END;
+$$ LANGUAGE plpgsql;
+
+--Lưu thông tin người đặt vé(user) -SaveUserDetails()
+CREATE OR REPLACE FUNCTION insertpassenger(
+    p_first_name VARCHAR(30),
+    p_last_name VARCHAR(30),
+    p_mail VARCHAR(50),
+    p_phone VARCHAR(30),
+    p_bookingid UUID
+)
+RETURNS VOID AS $$
+DECLARE
+    new_user_id INT;
+BEGIN
+    -- Insert into users table
+    INSERT INTO users (FirstName, LastName, Mail, Phone)
+    VALUES (p_first_name, p_last_name, p_mail, p_phone)
+    RETURNING users.userid INTO new_user_id;
+    
+    -- Update booking table with the new user ID
+    UPDATE booking 
+    SET UserID = new_user_id
+    WHERE bookingid = p_bookingid;
+END;
+$$ LANGUAGE plpgsql;
+
+--Lưu thông tin thanh toán  -SavePaymentDetails()
+CREATE OR REPLACE FUNCTION insert_payment_and_update_status(
+    p_bookingid UUID,
+    p_method VARCHAR(20),
+    p_amount VARCHAR(20),
+    p_transactiondate timestamp without timezone
+)
+RETURNS VOID AS $$
+BEGIN
+    -- Insert into payment table
+    INSERT INTO payment (bookingid, method, amount, transactiondate) 
+    VALUES (p_bookingid, p_method, cast(p_amount as money), p_transactiondate);
+
+    -- Update payment status in booking table
+    UPDATE booking
+    SET paymentstatus = 'completed'
+    WHERE bookingid = p_bookingid;
+END;
+$$ LANGUAGE plpgsql;

@@ -3,6 +3,7 @@ import Hero from "../../ui/hero";
 import Booking from "../../ui/booking";
 import PopularRoutes from "../../ui/PopularRoutes";
 import Footer from "../../ui/footer";
+import Whybookwithus from "@/app/ui/whybookus";
 export default function Home() {
   return (
     <main>
@@ -15,7 +16,9 @@ export default function Home() {
       <section id="Popular Routes" className="w-full h-full flex-center mt-24">
           <PopularRoutes></PopularRoutes>
       </section>
-      
+      <section id='About Us' className="w-full h-full  flex-center mt-24">
+          <Whybookwithus></Whybookwithus>
+      </section>
       
     </main>
   );

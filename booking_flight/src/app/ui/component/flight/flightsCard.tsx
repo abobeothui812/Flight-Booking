@@ -7,7 +7,7 @@ import { searchParamInformation } from "@/app/lib/definition"
 import FlightConfirmModal from "../bookingFlight/FlightConfirmModal"
 import { BookFlight } from "@/app/lib/action"
 export default async function FlightsCard( {flight,searchParams} : {flight : FlightSearchInformation,searchParams : searchParamInformation } ) {
-    const bookingid= await BookFlight(flight.flightid,searchParams);
+    const bookingid= await BookFlight(flight.flightnumber,searchParams);
     
     return(
         <div className="w-[900px]  flex flex-row shadow-sm rounded-lg border-2">

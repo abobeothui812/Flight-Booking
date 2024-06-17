@@ -1,7 +1,5 @@
 'use client'
-import { useFormState,useFormStatus } from "react-dom"
 import { useState } from "react";
-import { SearchFlight } from "@/app/lib/action";
 import DestinationCard from "./DestinationCard";
 import TypeCard from "./TypeCard";
 import DateInput from "./dateInput";
@@ -17,7 +15,6 @@ export default function FlightSearchForm( {LocationData} : {LocationData : Locat
     const router = useRouter();
     const searchParams = useSearchParams();
     const [selectedTicketType, setSelectedTicketType] = useState('One Way');
-    const [state, dispatch] = useFormState(SearchFlight,initialState);
     
     function handleButtonClick(value: string) {
     setSelectedTicketType(value);

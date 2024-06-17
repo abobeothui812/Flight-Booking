@@ -12,7 +12,7 @@ const Links =[
     {href:"/dashboard",name:"Home"},
     {href:"/",name:"About Us"},
     {href:"/",name:"Contact"},
-    {href:"/",name:"Your Flight"},
+    {href:"/Popular Routes",name:"Popular Destinations"},
 ];
 
 module.exports = {buttons,Cities,Links}

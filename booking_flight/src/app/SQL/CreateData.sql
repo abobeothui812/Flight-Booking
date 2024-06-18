@@ -283,13 +283,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 --Lưu thông tin thanh toán  -SavePaymentDetails()
-CREATE OR REPLACE FUNCTION insert_payment_and_update_status(
+CREATE OR REPLACE PROCEDURE insert_payment_and_update_status(
     p_bookingid UUID,
     p_method VARCHAR(20),
     p_amount VARCHAR(20),
     p_transactiondate timestamp without timezone
 )
-RETURNS VOID AS $$
 BEGIN
     -- Insert into payment table
     INSERT INTO payment (bookingid, method, amount, transactiondate) 

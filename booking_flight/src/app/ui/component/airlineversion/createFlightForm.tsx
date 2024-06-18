@@ -51,6 +51,8 @@ export default function CreateFlightForm({locations,airlineid}:{locations : Loca
             </div>
             <InputText labeltext="Aircraft Type" type="text" name="aircrafttype" placeholder="Boeing 747"></InputText>
             <input type="hidden" value={airlineid} name='airlineid' />
+            <InputText labeltext="Price" type="number" name="price" placeholder="100..$"></InputText>
+
             </div>
             <div className="w-full mt-16 flex-center">
                 <button onClick={handleMessage} className="BlueBtn w-1/4 h-[50px] text-2xl font-bold" type="submit">Create Flight</button>

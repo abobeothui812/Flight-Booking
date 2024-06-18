@@ -51,7 +51,7 @@ export type Location ={
     airportid : string;
     city : string;
     country : string;
-    name : string;
+    airportname : string;
 };
 
 export type PassengerArray ={

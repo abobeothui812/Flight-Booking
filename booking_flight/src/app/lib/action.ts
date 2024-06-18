@@ -244,6 +244,7 @@ export type Flightstate = {
       availableSeats_Eco?: string[];
       availableSeats_Business?: string[];
       availableSeats_FirstClass?: string[];
+      prices ?: string[];
   };
   message?: string | null;
 };
@@ -260,6 +261,7 @@ const FlightSchema = z.object({
   availableSeats_Eco: z.string(),
   availableSeats_Business: z.string(),
   availableSeats_FirstClass: z.string(),
+  prices: z.string(),
 });
 
 export async function CreateFlight(prevState : Flightstate,formData : FormData) {
@@ -275,22 +277,22 @@ export async function CreateFlight(prevState : Flightstate,formData : FormData) 
     availableSeats_Eco : formData.get('economy'),
     availableSeats_Business : formData.get('bussiness'),
     availableSeats_FirstClass : formData.get('firsclass'),
+    prices : formData.get('price'),
   }); 
   if (!validatedFields.success) {
       return {  errors: validatedFields.error.flatten().fieldErrors,
         message: 'Missing Fields. Failed to Save Other Passenger Details.' };
   }
   
-  const { flightid, flightnumber, airlineid, aircrafttype, departTime, arrivalTime, departAirportCode, arrivalAirportCode, availableSeats_Eco, availableSeats_Business, availableSeats_FirstClass } = validatedFields.data;
+  const { flightid, flightnumber, airlineid, aircrafttype, departTime, arrivalTime, departAirportCode, arrivalAirportCode, availableSeats_Eco, availableSeats_Business, availableSeats_FirstClass, prices} = validatedFields.data;
 
   try {
     console.table(validatedFields.data);
-    console.log('Data:', validatedFields.data);
     const client = await pool.connect();
     const
     res = await client.query(
-      `insert into flight(flightid, flightnumber, airlineid, aircrafttype, departtime, arrivaltime, departairportid, arrivalairportid, availableseat_economy, availableseat_business, availableseat_firstclass) values($1,$2,$3,$4,$5,$6,$7,$8,cast($9 as decimal),cast($10 as decimal),cast($11 as decimal))`,
-      [flightid, flightnumber, airlineid, aircrafttype, departTime, arrivalTime, departAirportCode, arrivalAirportCode, availableSeats_Eco, availableSeats_Business, availableSeats_FirstClass]
+      `insert into flight(flightid, flightnumber, airlineid, aircrafttype, departtime, arrivaltime, departairportid, arrivalairportid, availableseat_economy, availableseat_business, availableseat_firstclass,price) values($1,$2,$3,$4,$5,$6,$7,$8,cast($9 as decimal),cast($10 as decimal),cast($11 as decimal),cast($12 as money))`,
+      [flightid, flightnumber, airlineid, aircrafttype, departTime, arrivalTime, departAirportCode, arrivalAirportCode, availableSeats_Eco, availableSeats_Business, availableSeats_FirstClass,prices]
     );
     client.release();
     return {
